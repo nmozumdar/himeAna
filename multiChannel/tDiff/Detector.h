@@ -26,8 +26,11 @@
 #include "Module.h"
 
 namespace Detector{
+	// map module IDs on channel numbers
 	std::vector<Module> build(const char* path);
+	// return a std::vector of channels that are connected to a module
 	std::vector<int> getActiveChannels(const std::vector<Module>& modules);
+	bool isInside(int i, const std::vector<int>& v);
 };
 
 #endif

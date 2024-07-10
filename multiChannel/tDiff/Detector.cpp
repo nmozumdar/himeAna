@@ -22,13 +22,32 @@
 #include "Detector.h"
 #include "Constants.h"
 #include "CSVReader.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 using std::string;
 using std::vector;
+
+
+
+bool Detector::isInside(int i, const vector<int>& v){
+	for(int element: v){
+		if(i == element){
+			return true;
+		}
+	}
+	return false;
+}
+
+
 
 vector<Module> Detector::build(const char* path){
 
 	vector<Module> modules;
 	vector<vector<string>> csvData = CSVReader::read(path, 7);
+
+	vector<int> seenModuleIDs;
+	vector<int> seenChannels;
 	
 	// combine information and add modules to the detector
 	for(const vector<string> &entries : csvData){
@@ -48,6 +67,27 @@ vector<Module> Detector::build(const char* path){
 		// determine the HIME-module ID (unique for each scintillator)
 		int moduleID = layer * 24 + sub_module;
 
+		if(isInside(moduleID, seenModuleIDs)){
+			cout << "module ID " << moduleID << " appears more than once in the channel-mapping CSV file!" << endl;
+			continue;
+		}
+		else{
+			seenModuleIDs.push_back(moduleID);
+		}
+		if(isInside(ch_left_up, seenChannels)){
+			cout << "ch_left_up " << ch_left_up << " appears more than once in the channel-mapping CSV file!" << endl;
+			continue;
+		}
+		else{
+			seenChannels.push_back(ch_left_up);
+		}
+		if(isInside(ch_right_down, seenChannels)){
+			cout << "ch_right_down " << ch_right_down << " appears more than once in the channel-mapping CSV file!" << endl;
+			continue;
+		}
+		else{
+			seenChannels.push_back(ch_right_down);
+		}
 		modules.push_back(Module(moduleID, ch_left_up, ch_right_down));
 	}
 
