@@ -44,9 +44,7 @@ class HistogramCollection{
 	TH2F hChVsEvtNr;
 	TH1F hNMessages;
 	TH2F hChCorr;
-	TH1F hSlowScaler;
-	TH1F hFastScaler;
-	TH1F hSharpPeak;
+	TH1F hScalerDiff;
 	TH2F hTotVsModuleID;
 	TH2F hTDiffVsModuleID;
 	TH2F hTofVsModuleID;

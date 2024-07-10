@@ -46,9 +46,7 @@ HistogramCollection::HistogramCollection(const vector<int>& activeChannels, int 
 	hTotVsModuleID = TH2F("hTotVsModuleID", "Time over threshold vs. module ID", Constants::nModules, 0, Constants::nModules, 70, 0, 35);
 	hTDiffVsModuleID = TH2F("hTDiffVsModuleID", "", Constants::nModules, 0, Constants::nModules, 320, -40, 40);
 	hTofVsModuleID = TH2F("hTofVsModuleID", "", Constants::nModules, 0, Constants::nModules, 700, -150, 550);
-	hSlowScaler    = TH1F("hSlowScaler", "", 100, 0, 2e10);
-	hFastScaler    = TH1F("hFastScaler", "", 100, 0, 2e10);
-	hSharpPeak     = TH1F("hSharpPeak", "extremely sharp peak", 200, -100, 100);
+	hScalerDiff     = TH1F("hScalerDiff", "Difference between fast scaler and 4x slow scaler", 200, -100, 100);
 	hChannels.GetXaxis()->SetTitle("Channel number");
 	hTimeStamps.GetXaxis()->SetTitle("Time (ns)");
 	hTrigger.GetXaxis()->SetTitle("Tigger (TrbNet Type)");
@@ -84,9 +82,7 @@ void HistogramCollection::fill(const vector<vector<MF*>>& messagesSortedByChanne
 	}
 	hNMessages.Fill(nMessages);
 	hTrigger.Fill(trigger);
-	hSlowScaler.Fill(slowScaler);
-	hFastScaler.Fill(fastScaler);
-	hSharpPeak.Fill(fastScaler - 4. * slowScaler);
+	hScalerDiff.Fill(fastScaler - 4. * slowScaler);
 
 	// iterate over all pairs of active channels
 	for(int i = 0; i < fActiveChannels.size(); i++){
@@ -129,9 +125,7 @@ void HistogramCollection::write(TFile* f){
 	hChVsEvtNr.Write();
 	hNMessages.Write();
 	hChCorr.Write();
-	hSlowScaler.Write();
-	hFastScaler.Write();
-	hSharpPeak.Write();
+	hScalerDiff.Write();
 	gSlowScalerDiff.Write();
 	gFastScalerDiff.Write();
 	hTotVsModuleID.Write();
