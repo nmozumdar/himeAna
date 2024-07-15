@@ -56,15 +56,24 @@ TDiffData::TDiffData(TString path, TString filename){
 	// set branch addresses 
 	tDiff 		= nullptr;
 	tSum 		= nullptr;
+	tofRaw		= nullptr;
 	tot0 		= nullptr;
 	tot1 		= nullptr;
 	moduleID 	= nullptr;
+	nHits       = -1;
+	slowScaler  = -1;
+	fastScaler  = -1;
+	eventNumber = -1;
 	tree->SetBranchAddress("tDiff", &tDiff);
 	tree->SetBranchAddress("tSum", &tSum);
+	tree->SetBranchAddress("tofRaw", &tofRaw);
 	tree->SetBranchAddress("tot0", &tot0);
 	tree->SetBranchAddress("tot1", &tot1);
 	tree->SetBranchAddress("moduleID", &moduleID);
 	tree->SetBranchAddress("nHits", &nHits);
+	tree->SetBranchAddress("slowScaler", &slowScaler);
+	tree->SetBranchAddress("fastScaler", &fastScaler);
+	tree->SetBranchAddress("eventNumber", &eventNumber);
 }
 
 

@@ -41,14 +41,18 @@ class TDiffData{
 	inline float getCombinedTot(int hit) const { return std::sqrt((*tot0)[hit] * (*tot1)[hit]); }
 	inline int getModuleID(int hit) const { return (*moduleID)[hit]; }
 
-	// *** The following data is read from the TChain ***
-	std::vector<float>* tDiff;				// Time difference between the rising signals of PMT 0 and 1
-	std::vector<float>* tSum;				// Sum of the times of the rising signals of PMT 0 and 1
-	std::vector<float>* tot0;				// Time over threshold of PMT 0
-	std::vector<float>* tot1;				// Time over threshold of PMT 1
-	std::vector<int>* moduleID;				// Identification number of the corresponding module
-	int nHits;								// Number of hits in each event
-
+	// *** The following data are read from the TChain ***
+	std::vector<float>* tDiff;              // Time difference between the rising signals of PMT 0 and 1
+	std::vector<float>* tSum;               // Sum of the times of the rising signals of PMT 0 and 1
+	std::vector<float>* tofRaw;             // Uncalibrated time of flight
+	std::vector<float>* tot0;               // Time over threshold of PMT 0
+	std::vector<float>* tot1;               // Time over threshold of PMT 1
+	std::vector<int>* moduleID;             // Identification number of the corresponding module
+	int nHits;                              // Number of hits in each event
+	uint64_t slowScaler;                    // Value of the fast scaler
+	uint64_t fastScaler;                    // Value of the slow scaler
+	uint64_t eventNumber;                   // Event number
+	
 	private:
 	TFile *file;
 	TTree *tree;

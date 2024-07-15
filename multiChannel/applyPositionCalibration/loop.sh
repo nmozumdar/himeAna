@@ -20,9 +20,16 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2022-11-30b
-geometryFile=2022-10-11.csv
-thresholdsFile=2022-11-30b.csv
+# select the data you want to calibrate
+subdir=2024-06-30
+#subdir=2024-06-25_cosmics
+geometryFile=2024-06-21.csv
+# The thresholds will NOT apply a cut on the data that are written to the output TTree object!
+# Only the data shown in the histograms are affected.
+# Leave empty (also remove spaces or tab symbols behind "=") to apply no thresholds.
+thresholdsFile=2024-06-21.csv
+# here you define the (previously determined) position calibration that you want to apply
+subdir_calibration=2024-06-25_cosmics
 # ------------------------------
 
 source ../../common/common.sh
@@ -38,7 +45,7 @@ if [ $? -eq 0 ]; then
 	for filename in "$HIME_ANA_DIRECTORY"/data/tDiff/"$subdir"/*.root; do
 		check_threads "$fileCounter"
 		filename=$(basename "$filename")
-		$ROOT_CALL "applyCalibration( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\", false)" > /dev/null &
+		$ROOT_CALL "applyCalibration( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", false)" > /dev/null &
 		fileCounter=`expr ${fileCounter} + 1`
 	done
 

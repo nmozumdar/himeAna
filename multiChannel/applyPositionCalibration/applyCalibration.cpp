@@ -37,7 +37,7 @@ using std::endl;
 
 
 
-void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* thresholdsFile, bool plot){
+void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* thresholdsFile, const char* subdir_calibration, bool plot){
 
 	// ---------------- Input ----------------
 	TDiffData input(TString(trb3dir ) + "/data/tDiff/" + TString(dir), filename);
@@ -48,13 +48,13 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 	PosCalData output(TString(trb3dir) + "/data/applyPositionCalibration/" + TString(dir) + "/" + TString(filename), input);
 
 	// ---------------- Get position calibration functions ----------------
-	CalibrationFunctions posCalFuncs(TString(trb3dir) + "/data/simplePositionCalibration/" + TString(dir) + "/calibration.root" );
+	CalibrationFunctions posCalFuncs(TString(trb3dir) + "/data/simplePositionCalibration/" + TString(subdir_calibration) + "/calibration.root" );
 
 	// ---------------- Get positions of all modules from the geometry file ----------------
 	vector<vector<string>> csvData = CSVReader::read(TString(trb3dir) + "/data/geometry/" + TString(geometryFile), 5);
 	vector<Module> modules(Constants::nModules);
 
-	// csv data contains: entry 0 -> moduleID; entry 1 -> position x; entry 1 -> position y; entry 1 -> position z
+	// csv data contains: entry 0 -> moduleID; entry 1 -> position x; entry 2 -> position y; entry 3 -> position z; entry 4 -> orientation (horizontal / vertical)
 	for(const vector<string> &line : csvData){
 		int moduleID = std::stoi(line[0]);
 		modules[moduleID] = Module(moduleID, std::stof(line[1]), std::stof(line[2]), std::stof(line[3]), std::stoi(line[4]));
@@ -63,7 +63,14 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 	// ---------------- Get thresholds for all modules ----------------
 	// The thresholds will NOT apply a cut on the data that are written to the output TTree object!
 	// Only the data shown in the histograms of "HistogramCollection hc" are affected.
-	Thresholds thrs(TString(trb3dir) + "/data/thresholds/" + TString(thresholdsFile), modules.size());
+	TString thresholdsFile_tstr(thresholdsFile);
+	Thresholds thrs;
+	if(thresholdsFile_tstr.Length()){
+		thrs = Thresholds(TString(trb3dir) + "/data/thresholds/" + TString(thresholdsFile), modules.size());
+	}
+	else{
+		thrs = Thresholds(-1, Constants::nModules);
+	}
 
 	// ---------------- Loop over events: Apply calibration on event-by-event basis ----------------
 	HistogramCollection hc(Helpers::countLayers(modules));

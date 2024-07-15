@@ -36,15 +36,19 @@ PosCalData::PosCalData(TString path, TDiffData &input){
 
 	// *** The following data is written to the TTree ***
 	// create branches
-	tree->Branch("x", &x);								// Position coordinate x
-	tree->Branch("y", &y);								// Position coordinate y
-	tree->Branch("z", &z);								// Position coordinate z
-	tree->Branch("tDiff", &(input.tDiff));				// Time difference between the rising signals of PMT 0 and 1
-	tree->Branch("tSum", &(input.tSum));				// Sum of the times of the rising signals of PMT 0 and 1
-	tree->Branch("tot0", &(input.tot0));				// Time over threshold of PMT 0
-	tree->Branch("tot1", &(input.tot1));				// Time over threshold of PMT 1
-	tree->Branch("moduleID", &(input.moduleID));		// Identification number of the corresponding module
-	tree->Branch("nHits", &(input.nHits), "nHits/I");	// Number of hits in each event
+	tree->Branch("x", &x);                                              // Position coordinate x
+	tree->Branch("y", &y);                                              // Position coordinate y
+	tree->Branch("z", &z);                                              // Position coordinate z
+	tree->Branch("tDiff", &(input.tDiff));                              // Time difference between the rising signals of PMT 0 and 1
+	tree->Branch("tSum", &(input.tSum));                                // Sum of the times of the rising signals of PMT 0 and 1
+	tree->Branch("tofRaw", &(input.tofRaw));                            // Uncalibrated time of flight
+	tree->Branch("tot0", &(input.tot0));                                // Time over threshold of PMT 0
+	tree->Branch("tot1", &(input.tot1));                                // Time over threshold of PMT 1
+	tree->Branch("moduleID", &(input.moduleID));                        // Identification number of the corresponding module
+	tree->Branch("nHits", &(input.nHits), "nHits/I");                   // Number of hits in each event
+	tree->Branch("slowScaler", &(input.slowScaler), "slowScaler/g");	// Value of the fast scaler
+	tree->Branch("fastScaler", &(input.fastScaler), "fastScaler/g");	// Value of the slow scaler
+	tree->Branch("eventNumber", &(input.eventNumber), "eventNumber/g");	// Event number
 }
 
 
