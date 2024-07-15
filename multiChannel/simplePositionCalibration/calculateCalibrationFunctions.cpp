@@ -36,7 +36,7 @@ using std::endl;
 
 
 
-void calculateCalibrationFunctions(const char *trb3dir, const char *subdir, vector<const char*> filenames){
+void calculateCalibrationFunctions(const char* trb3dir, const char* subdir, const char* thresholdsFileName, vector<const char*> filenames){
 
 
 	// ---------------- Import all correlation plots showing ToT vs TDiff ----------------
@@ -51,7 +51,7 @@ void calculateCalibrationFunctions(const char *trb3dir, const char *subdir, vect
 	// ---------------- Import thresholds ----------------
 
 	TString pathToCSVFile(trb3dir);
-	pathToCSVFile += "/data/thresholds/" + TString(subdir) + ".csv";
+	pathToCSVFile += TString("/data/thresholds/") + thresholdsFileName;
 	Thresholds thrs(pathToCSVFile, Constants::nModules);
 
 
@@ -84,9 +84,11 @@ void calculateCalibrationFunctions(const char *trb3dir, const char *subdir, vect
 	TString calibrationPathOut = directory + "calibration.root";
 
 	cout << "[calculateCalibrationFunctions] Writing info file " << infoPathOut << endl;
-	hc.writeInfo(infoPathOut);
+	TFile *fInfo = new TFile(infoPathOut, "recreate");
+	hc.writeInfo(fInfo);
 	cout << "[calculateCalibrationFunctions] Writing calibration file " << calibrationPathOut << endl;
-	hc.writeCalibration(calibrationPathOut);
+	TFile *fCalibration = new TFile(calibrationPathOut, "recreate");
+	hc.writeCalibration(fCalibration);
 
 
 	// ---------------- draw ----------------

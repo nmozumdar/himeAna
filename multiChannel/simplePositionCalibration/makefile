@@ -20,11 +20,12 @@
 
 headers = $(wildcard *.h)
 sources = $(wildcard *.cpp)
+target = libCalibration.so
 
 .PHONY: clean
 
-libCalibration.so: $(sources) $(headers)
+$(target): $(sources) $(headers)
 	g++ -shared -fPIC -O2 -o $@ $(sources) $(shell root-config --cflags --libs) -I. -I../../common/hime -L../../common/lib -lCommon
 
 clean:
-	@rm -f libCalibration.so
+	@rm -f $(target)

@@ -21,7 +21,6 @@
 
 #include "HistogramCollection.h"
 
-#include "TFile.h"
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -39,6 +38,10 @@ HistogramCollection::HistogramCollection(){
 
 	hVEff = TH1F("hVEff", "Effective velocity of light", Constants::nModules, 0, Constants::nModules);
 	hOffs = TH1F("hOffs", "Position offset", Constants::nModules, 0, Constants::nModules);
+	hVEff.GetXaxis()->SetTitle("Module ID");
+	hOffs.GetXaxis()->SetTitle("Module ID");
+	hVEff.GetYaxis()->SetTitle("v_{\\mbox{eff}} \\mbox{ (mm/ns)}");
+	hOffs.GetYaxis()->SetTitle("x_0 \\mbox{ (mm)}");
 }
 
 
@@ -61,8 +64,8 @@ void HistogramCollection::fillHistograms(const Module& m, float threshold){
 
 
 
-void HistogramCollection::writeInfo(TString path){
-	TFile *f = new TFile(path, "recreate");
+void HistogramCollection::writeInfo(TFile* f){
+	f->cd();
 	hLeftEdge.Write();
 	hRightEdge.Write();
 	hThr.Write();
@@ -71,8 +74,8 @@ void HistogramCollection::writeInfo(TString path){
 
 
 
-void HistogramCollection::writeCalibration(TString path){
-	TFile *f = new TFile(path, "recreate");
+void HistogramCollection::writeCalibration(TFile* f){
+	f->cd();
 	hVEff.Write();
 	hOffs.Write();
 }

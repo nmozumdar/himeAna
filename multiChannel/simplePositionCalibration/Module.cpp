@@ -52,8 +52,8 @@ void Module::setEdges(const std::array<std::array<float,2>,2>& edges){
 	positionCalibrationFunction = CalibrationFunction(
 		getLeftEdgeWithUnc(), 
 		getRightEdgeWithUnc(), 
-		{Constants::moduleDimension[0], 0.}, 
 		{Constants::moduleDimension[1], 0.}, 
+		{Constants::moduleDimension[0], 0.}, 
 		calFuncName
 	);
 

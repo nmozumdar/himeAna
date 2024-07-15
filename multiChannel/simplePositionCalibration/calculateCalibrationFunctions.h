@@ -24,6 +24,6 @@
 
 #include <vector>
 
-void calculateCalibrationFunctions(const char *trb3dir, const char *subdir, std::vector<const char*> filenames);
+void calculateCalibrationFunctions(const char *trb3dir, const char *subdir, const char* thresholdsFileName, std::vector<const char*> filenames);
 
 #endif

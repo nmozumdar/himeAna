@@ -28,14 +28,15 @@
 #include "Module.h"
 #include "Constants.h"
 #include "CalibrationFunction.h"
+#include "TFile.h"
 #include "TString.h"
 
 class HistogramCollection{
 	public:
 	HistogramCollection();
 	void fillHistograms(const Module& m, float threshold);
-	void writeInfo(TString path);
-	void writeCalibration(TString path);
+	void writeInfo(TFile* f);
+	void writeCalibration(TFile* f);
 	TH1F hLeftEdge;
 	TH1F hRightEdge;
 	TH1F hThr;

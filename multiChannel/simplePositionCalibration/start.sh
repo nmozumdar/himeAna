@@ -20,7 +20,8 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2022-11-30b
+subdir=2024-06-25_cosmics
+thresholds=2024-06-21.csv
 # ------------------------------
 
 source ../../common/common.sh
@@ -34,7 +35,7 @@ if [ $? -eq 0 ]; then
 	get_all_files tDiff "$subdir"
 
 	# calculate calibration functions
-	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${ALL_FILES})"
+	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${thresholds}\",${ALL_FILES})"
 	
 	# print message when all jobs are completed
 	wait
