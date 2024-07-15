@@ -20,13 +20,13 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdirs=(2024-06-16)
+subdirs=(2024-06-27 2024-06-28 2024-06-29 2024-06-30 2024-07-01 2024-06-25_cosmics)
 trigger=-1
 # choose if you want to take only the first pulse in each bar
 # for your analysis. Otherwise, multiple hits can be detected 
 # in each module, but there might be more noise.
 # false -> first hit only;   true -> all hits
-multihit=true
+multihit=false
 # ------------------------------
 
 source ../../common/common.sh

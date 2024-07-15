@@ -22,6 +22,6 @@
 #ifndef tDiff_h
 #define tDiff_h
 
-void tDiff(const char *trb3dir, const char *dir, const char *filename, int trigger = -1, bool multihit = 0, bool write = true, bool plot = true);
+void tDiff(const char *trb3dir, const char *dir, const char *filename, int trigger = -1, bool multihit = false, bool write = true, bool plot = true);
 
 #endif

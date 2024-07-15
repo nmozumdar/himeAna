@@ -89,7 +89,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, int trigg
 	ProgressIndicator pi(nEvents, "[tDiff] Processed events:");
 
 	for(int eventCounter = 0; eventCounter < nEvents; eventCounter++){
-		output.EventNumber = eventCounter; 
+		output.eventNumber = eventCounter; 
 		pi.showProgress(eventCounter);
 		output.reset();
 		vector<vector<MF*>> messagesSortedByChannel = input.getMessagesSortedByChannel(eventCounter);

@@ -49,7 +49,7 @@ class TDiffData{
 	int nHits;								// Number of hits in each event
 	uint64_t slowScaler;                    // Value of the slow scaler 
 	uint64_t fastScaler;                    // Value of the fast scaler 
-	int EventNumber; 						// Event Number created by HIME DAQ
+	int eventNumber; 						// Event Number created by HIME DAQ
 
 	private:
 	TFile *file;

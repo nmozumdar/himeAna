@@ -46,7 +46,7 @@ TDiffData::TDiffData(TString path){
 	tree->Branch("nHits", &nHits, "nHits/I");
 	tree->Branch("slowScaler", &slowScaler, "slowScaler/g");
 	tree->Branch("fastScaler", &fastScaler, "fastScaler/g");
-	tree->Branch("EventNumber", &EventNumber);
+	tree->Branch("eventNumber", &eventNumber);
 }
 
 

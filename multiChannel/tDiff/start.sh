@@ -26,8 +26,8 @@ trigger=-1
 # choose if you want to take only the first pulse in each bar
 # for your analysis. Otherwise, multiple hits can be detected 
 # in each module, but there might be more noise.
-# 0 -> first hit only;   1 -> all hits
-multihit=1
+# false -> first hit only;   true -> all hits
+multihit=false
 plot=true
 write=true
 # ------------------------------
