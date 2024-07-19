@@ -19,7 +19,7 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "correlateEDepToT.h"
+#include "simpleTrackingForEnergyCalibration.h"
 #include "ProgressIndicator.h"
 #include "HistogramCollection.h"
 #include "PosCalData.h"
@@ -38,7 +38,7 @@ using std::endl;
 
 
 
-void correlateEDepToT(const char* trb3dir, const char* dir, const char* filename, int minMultiplicity, float maxDev){
+void simpleTrackingForEnergyCalibration(const char* trb3dir, const char* dir, const char* filename, int minMultiplicity, float maxDev){
 
 	// ---------------- Input ----------------
 	PosCalData input(TString(trb3dir) + "/data/applyPositionCalibration/" + TString(dir), filename);
@@ -213,8 +213,8 @@ void correlateEDepToT(const char* trb3dir, const char* dir, const char* filename
 
 
 	// ---------------- Ouput ----------------
-	TString pathOut(TString(trb3dir) + "/data/correlateEDepToT/" + TString(dir) + "/" + TString(filename));
-	cout << "[correlateEDepToT] Writing file " << pathOut.Data() << endl;
+	TString pathOut(TString(trb3dir) + "/data/simpleTrackingForEnergyCalibration/" + TString(dir) + "/" + TString(filename));
+	cout << "[simpleTrackingForEnergyCalibration] Writing file " << pathOut.Data() << endl;
 	TFile* fileOut = new TFile(pathOut, "recreate");
 	hc.write(fileOut);
 	for(Module& m: modules){

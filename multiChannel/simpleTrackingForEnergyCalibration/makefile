@@ -1,4 +1,3 @@
-#!/bin/bash
 
 #	HIMEana: Analyze HIME data.
 #	
@@ -19,29 +18,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
-# ---------- settings ----------
-subdir=2024-06-25_cosmics
-minMultiplicity=5
-maxDev=70
-# ------------------------------
+headers := $(wildcard *.h)
+sources := $(wildcard *.cpp)
+target := libSimpleTrackingForEnergyCalibration.so
 
-source ../../common/common.sh
+.PHONY: clean
 
-make
+$(target): $(sources) $(headers)
+	g++ -shared -fPIC -O2 -o $@ $(sources) $(shell root-config --cflags --libs) -I. -I../../common/hime -L../../common/lib -lCommon
 
-if [ $? -eq 0 ]; then
-	
-	fileCounter=0
-	
-	create_directory correlateEDepToT "$subdir"
-
-	for filename in "$HIME_ANA_DIRECTORY"/data/tDiff/"$subdir"/*.root; do
-		check_threads "$fileCounter"
-		filename=$(basename "$filename")
-		$ROOT_CALL "correlateEDepToT( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", ${minMultiplicity}, ${maxDev})" > /dev/null &
-		fileCounter=`expr ${fileCounter} + 1`
-	done
-
-	wait
-	echo -e "\nloop.sh done."
-fi;
+clean:
+	rm -f $(target)

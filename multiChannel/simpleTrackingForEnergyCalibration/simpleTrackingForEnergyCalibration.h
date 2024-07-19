@@ -19,9 +19,9 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef correlateEDepToT_h
-#define correlateEDepToT_h
+#ifndef simpleTrackingForEnergyCalibration_h
+#define simpleTrackingForEnergyCalibration_h
 
-void correlateEDepToT(const char* trb3dir, const char* dir, const char* filename, int minMultiplicity, float maxDev);
+void simpleTrackingForEnergyCalibration(const char* trb3dir, const char* dir, const char* filename, int minMultiplicity, float maxDev);
 
 #endif

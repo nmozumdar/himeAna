@@ -33,11 +33,11 @@ make
 
 if [ $? -eq 0 ]; then
 
-	create_directory correlateEDepToT "$subdir"
+	create_directory simpleTrackingForEnergyCalibration "$subdir"
 
 	# start 
 	filename=$(basename "$filename")
-	$ROOT_CALL "correlateEDepToT( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", ${minMultiplicity}, ${maxDev}, ${allowedPositionRange})"
+	$ROOT_CALL "simpleTrackingForEnergyCalibration( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", ${minMultiplicity}, ${maxDev}, ${allowedPositionRange})"
 
 	wait
 	echo -e "\nstart.sh done."

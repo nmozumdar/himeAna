@@ -21,6 +21,6 @@
 
 {
 	std::cout << "Loading rootlogon.C..." << std::endl;
-	gROOT->ProcessLine(".L correlateEDepToT.h");
-	gROOT->ProcessLine(".L libCorrelateEDepToT.so");
+	gROOT->ProcessLine(".L simpleTrackingForEnergyCalibration.h");
+	gROOT->ProcessLine(".L libSimpleTrackingForEnergyCalibration.so");
 }
