@@ -23,16 +23,17 @@ along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Contents
 - [HIMEana - Analyze HIME Data](#himeana---analyze-hime-data)
-  - [Copyright Notice and License](#copyright-notice-and-license)
-  - [Contents](#contents)
-  - [Initial Setup](#initial-setup)
-  - [Structure of the HIMEana Tools](#structure-of-the-himeana-tools)
-    - [Configure Details about the Setup of HIME](#configure-details-about-the-setup-of-hime)
-    - [Steps of the multiChannel Analysis](#steps-of-the-multichannel-analysis)
-    - [Common Source Code](#common-source-code)
-  - [Compile and Start](#compile-and-start)
-  - [Files taken from the Stream framework](#files-taken-from-the-stream-framework)
-    - [Copyright Notice and License for the Stream Framework](#copyright-notice-and-license-for-the-stream-framework)
+	- [Copyright Notice and License](#copyright-notice-and-license)
+	- [Contents](#contents)
+	- [Initial Setup](#initial-setup)
+	- [HIME Nomenclature and Unique Channel Numbering](#hime-nomenclature-and-unique-channel-numbering)
+	- [Structure of the HIMEana Tools](#structure-of-the-himeana-tools)
+		- [Configure Details about the Setup of HIME](#configure-details-about-the-setup-of-hime)
+		- [Steps of the multiChannel Analysis](#steps-of-the-multichannel-analysis)
+		- [Common Source Code](#common-source-code)
+	- [Compile and Start](#compile-and-start)
+	- [Files taken from the Stream framework](#files-taken-from-the-stream-framework)
+		- [Copyright Notice and License for the Stream Framework](#copyright-notice-and-license-for-the-stream-framework)
 
 ## Initial Setup
 1. Go to directory `data` and create a symbolic link called `unpacked` that points towards your unpacked data:
@@ -43,6 +44,21 @@ along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
    2. (optional) Modify the command that is used to call ROOT. This might be useful if you are using an older version of ROOT that does not yet include a web server to display all your instances of TCanvas, TBrowser, etc. in your web browser.
    3. Enter the complete absolute path to your `himeAna` directory.
 3. In the same directory `common`, type `./compileCommons.sh`. This will create shared libraries that are loaded in each of the individual analysis steps.
+
+## HIME Nomenclature and Unique Channel Numbering
+- Module: The combination of a scintillator and it's two photomultiplier tubes (PMTs)
+- Layer: An array of 24 either horizontally or vertically aligned modules
+- Detector wall: A set of layers
+
+The analogue signals that come from the photomultipliert tubes (PMTs) are discriminated by the PaDiWa boards. Each of them has 16 channels in is connected via a DAC chain to a peripheral field programmable gate array (FPGA). There can be up to 3 PaDiWa boards for an FPGA, so in total, each FPGA can cover 48 channels. The FPGAs serve as time-to-digital converters (Not all of them, but all where PaDiWa boards are connected). On each TRB3 board, we can use up to 4 FPGAs as TDCs, so up to 192 channels can be read out. 
+
+In order to have a unique number for each channel, the HIME channel number is defined as 
+
+	HIME channel = (DAC chain) x 16 + (FPGA number) x 48 
+
+This will be extended by `... + (TRB3 number) x 192` once we have more TRB3 boards in operation.
+
+The numbering will always start from 0: The first layer is layer 0, the first HIME channel is 0, the first detector wall is wall 0, the first PaDiWa channel is 0, ...
 
 ## Structure of the HIMEana Tools
 The two main parts of HIMEana are `fourChannel` and `multiChannel`. The former is used to have a look on uncalibrated data from up to 4 channels and allows to cut on coincidences between two modules. The latter is used to calibrate all modules of HIME in time, position and energy, which is done is multiple steps. For each step, there is a subdirectory in `multichannel`, which reads and writes from/to the corresponding subdirectories of `data`. 
@@ -68,8 +84,10 @@ In the following, the individual parts of the multiChannel analysis are listed. 
      1. `trackingForPositionCalibration`: Tracks cosmic muons through the detector and writes down correlation plots of time differences (i.e., time difference of detection of the signals of the two PMTs of each module) and muon position for each module. This is a rather complicated method, so its results should be checked carefully. It gets more precise with a larger number of layers and modules.
      2. `positionCalibrationFromTracking`: Fits linear calibration functions to the previously determined correlation plots.
 3. `applyPositionCalibration`: Applies the position calibration on the data.
-4. `trackingForEnergyCalibration`: Tracks again muons in HIME, but makes use of the position calibration. The results are correlation plots of ToT and muon-energy deposition. The latter is calculated from the track lengths of the cosmic particles inside each module.
-5. `energyCalibration`: Fits calibration functions to the previously determined correlation plots.
+4. Tracks again muons in HIME, but makes use of the position calibration. The results are correlation plots of ToT and muon-energy deposition. The latter is calculated from the track lengths of the cosmic particles inside each module.
+   - either simple with 2D tracks: `simpleTrackingForEnergyCalibration`: works with only 3 layers
+   - or more complex with 3D tracks: `trackingForEnergyCalibration`: needs at least 4 layers; less reliable with a small number of layers
+5. `energyCalibration`: Fits calibration functions to the previously determined correlation plots. (Not yet tested with `simpleTrackingForEnergyCalibration`)
 
 Besides, there is a tool called `sumUp` in `multiChannel`, which serves to sum up spectra and correlation plots from all runs of the same experiment. It is not a part of the calibration procedure, but can be used for visualization after some of the individual analysis steps.
 
