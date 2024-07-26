@@ -23,6 +23,9 @@
 
 #include "TDiffFitFunction.h"
 #include "TF1.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 using std::array;
 
 
@@ -48,7 +51,7 @@ void Fitter::determineEdges(Module& m, float totCut){
 	// 2: gauss_left_pos
 	// 3: gauss_right_width
 	// 4: gauss_left_to_right_dist
-	tDiffFit.fTF1->SetParameters(m.projection.GetMaximum(), 1, mean - width / 2., 1, width);
+	tDiffFit.fTF1->SetParameters(m.projection.GetMaximum(), 0.5, mean - width / 2., 0.5, width);
 	// restrict the width of the Gaussians (must be larger than the time resolution)
 	tDiffFit.fTF1->SetParLimits(1, 0.08, 10.);
 	tDiffFit.fTF1->SetParLimits(3, 0.08, 10.);
@@ -56,6 +59,12 @@ void Fitter::determineEdges(Module& m, float totCut){
 	tDiffFit.fTF1->SetParLimits(4, 0.0, 20.);
 	// perform the fit
 	m.projection.Fit(tDiffFit.fTF1, "rq0");
+	// print all fit parameters
+	cout << "\n[Fitter] Module " << m.getID() << ":\n";
+	for(int i = 0; i < 5; i++){
+		cout << "Parameter " << i << ": " << tDiffFit.fTF1->GetParameter(i) << "\n";
+	}
+	cout << endl;
 	// get result
 	// { {left_edge_pos, left_edge_pos_unc}, {right_edge_pos, right_edge_pos_unc} }
 	m.setEdges(tDiffFit.getEdges());

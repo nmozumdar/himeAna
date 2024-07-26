@@ -26,6 +26,9 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "TLine.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 using std::vector;
 
 
@@ -67,30 +70,32 @@ void Drawer::drawModules(vector<Module>& modules, const Thresholds& thrs){
 
 	for(int id = 0; id < Constants::nModules; id++){
 
-		if(!modules[id].projection.GetEntries()) continue;
-
 		if(padCounter == nPadsPerCan){
+			cout << "\n[Drawer] Modules " << id << " to " << id + nPadsPerCan - 1 << ":" << endl;
 			canvases.push_back(new TCanvas("can" + Convert::toStr(canCounter), "", 1400, 1000));
 			canvases.back()->Divide(nCols, nRows);
 			canCounter++;
 			padCounter = 0;
 		}
 
-		canvases.back()->cd(padCounter+1);
-		gPad->Divide(1,2);
+		if(modules[id].projection.GetEntries()){
 
-		// draw correlation plot
-		canvases.back()->cd(padCounter+1)->cd(1);
-		modules[id].hTotVsTDiff.DrawClone("colz");
-		TLine thrLine(modules[id].hTotVsTDiff.GetXaxis()->GetXmin(), thrs[id], modules[id].hTotVsTDiff.GetXaxis()->GetXmax(), thrs[id]);
-		thrLine.SetLineStyle(2);
-		thrLine.SetLineColor(kRed+1);
-		thrLine.DrawClone();
+			canvases.back()->cd(padCounter+1);
+			gPad->Divide(1,2);
 
-		// draw projection
-		canvases.back()->cd(padCounter+1)->cd(2);
-		modules[id].projection.DrawClone();
-		modules[id].projFit->Draw("same");
+			// draw correlation plot
+			canvases.back()->cd(padCounter+1)->cd(1);
+			modules[id].hTotVsTDiff.DrawClone("colz");
+			TLine thrLine(modules[id].hTotVsTDiff.GetXaxis()->GetXmin(), thrs[id], modules[id].hTotVsTDiff.GetXaxis()->GetXmax(), thrs[id]);
+			thrLine.SetLineStyle(2);
+			thrLine.SetLineColor(kRed+1);
+			thrLine.DrawClone();
+
+			// draw projection
+			canvases.back()->cd(padCounter+1)->cd(2);
+			modules[id].projection.DrawClone();
+			modules[id].projFit->Draw("same");
+		}
 		padCounter++;
 	}
 }

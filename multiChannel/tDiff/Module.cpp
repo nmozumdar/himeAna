@@ -44,7 +44,7 @@ Module::Module(int id, int ch_left_up, int ch_right_down){
 	TString channelInfoInParenthesis(" (left/top channel: " + ch_left_up_str + ", right/bottom channel: " + ch_right_down_str + ")");
 	TString moduleInfoInParenthesis(" (module " + id_str + ")");
 
-	hTotVsTDiff = TH2F("hTotVsTDiff_module_" + id_str, "Module " + id_str + channelInfoInParenthesis, 320, -40, 40, 100, 0, 50);
+	hTotVsTDiff = TH2F("hTotVsTDiff_module_" + id_str, "Module " + id_str + channelInfoInParenthesis, 640, -40, 40, 100, 0, 50);
 	hTot_left_up = TH1F("hTot_ch_" + ch_left_up_str, "Channel " + ch_left_up_str + moduleInfoInParenthesis, 100, 0, 50);
 	hTot_right_down = TH1F("hTot_ch_" + ch_right_down_str, "Channel " + ch_right_down_str + moduleInfoInParenthesis, 100, 0, 50);
 
