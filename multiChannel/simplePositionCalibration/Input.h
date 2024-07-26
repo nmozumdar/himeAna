@@ -28,7 +28,7 @@
 
 class Input{
 	public:
-	Input(const char *trb3dir, const char *subdir, std::vector<const char*> filenames, std::vector<Module>& modules);
+	Input(const char *trb3dir, const char *subdir, std::vector<Module>& modules);
 	private:
 	std::vector<TFile*> files;
 };

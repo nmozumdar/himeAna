@@ -42,7 +42,13 @@ void Fitter::determineEdges(Module& m, float totCut){
 	TDiffFitFunction &tDiffFit = *tDiffFitPtr;
 	m.projFit = tDiffFit.fTF1;
 	// set start parameters and perform fit
-	tDiffFit.fTF1->SetParameters(m.projection.GetMaximum(), 0.1, mean - width / 2., 0.1, width);
+	// list of parameters:
+	// 0: gauss_scale
+	// 1: gauss_left_width
+	// 2: gauss_left_pos
+	// 3: gauss_right_width
+	// 4: gauss_left_to_right_dist
+	tDiffFit.fTF1->SetParameters(m.projection.GetMaximum(), 1, mean - width / 2., 1, width);
 	// restrict the width of the Gaussians (must be larger than the time resolution)
 	tDiffFit.fTF1->SetParLimits(1, 0.08, 10.);
 	tDiffFit.fTF1->SetParLimits(3, 0.08, 10.);

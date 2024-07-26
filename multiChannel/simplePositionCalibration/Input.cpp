@@ -23,13 +23,24 @@
 #include "Constants.h"
 #include "Convert.h"
 #include <iostream>
+#include <fstream>
 using std::cout;
 using std::endl;
 using std::vector;
+using std::string;
+using std::ifstream;
 
 
 
-Input::Input(const char *trb3dir, const char *subdir, std::vector<const char*> filenames, vector<Module>& modules){
+Input::Input(const char *trb3dir, const char *subdir, vector<Module>& modules){
+
+	// read the file names from the tmpfile.txt~ file
+	string filename;
+	vector<TString> filenames;
+	ifstream tmpfile("tmpfile.txt~", std::ios::in);
+	while(std::getline(tmpfile, filename)){
+		filenames.push_back(filename);
+	}
 
 	files = vector<TFile*>(filenames.size());
 
@@ -52,4 +63,6 @@ Input::Input(const char *trb3dir, const char *subdir, std::vector<const char*> f
 		}
 		if(iFile) files[iFile]->Close();
 	}
+
+	tmpfile.close();
 }

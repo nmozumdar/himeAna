@@ -36,7 +36,7 @@ using std::endl;
 
 
 
-void calculateCalibrationFunctions(const char* trb3dir, const char* subdir, const char* thresholdsFileName, vector<const char*> filenames){
+void calculateCalibrationFunctions(const char* trb3dir, const char* subdir, const char* thresholdsFileName){
 
 
 	// ---------------- Import all correlation plots showing ToT vs TDiff ----------------
@@ -45,7 +45,7 @@ void calculateCalibrationFunctions(const char* trb3dir, const char* subdir, cons
 	// set the names of the ToT-vs.-tDiff correlation plots and their projections
 	for(int id = 0; id < Constants::nModules; id++) modules[id].setID(id);
 	
-	Input input(trb3dir, subdir, filenames, modules);
+	Input input(trb3dir, subdir, modules);
 
 
 	// ---------------- Import thresholds ----------------

@@ -38,3 +38,10 @@ get_all_files () {
 	ALL_FILES=${ALL_FILES%?}
 	ALL_FILES="$ALL_FILES""}"
 }
+
+# write the file names of all root files in subdir to a temporary file
+write_fileNames_to_tmpfile () {
+	for COMPLETE_PATH in "$HIME_ANA_DIRECTORY"/data/"$1"/"$2"/*.root; do
+		echo $(basename $COMPLETE_PATH) >> tmpfile.txt~
+	done
+}

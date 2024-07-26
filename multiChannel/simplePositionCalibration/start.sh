@@ -20,8 +20,8 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2024-06-25_cosmics
-thresholds=2024-06-21.csv
+subdir=2024-07-10_cosmics
+thresholds=2024-07-26.csv
 # ------------------------------
 
 source ../../common/common.sh
@@ -32,10 +32,12 @@ if [ $? -eq 0 ]; then
 
 	create_directory simplePositionCalibration "$subdir"
 
-	get_all_files tDiff "$subdir"
+	write_fileNames_to_tmpfile tDiff "$subdir"
 
 	# calculate calibration functions
-	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${thresholds}\",${ALL_FILES})"
+	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${thresholds}\")"
+
+	rm -f tmpfile.txt~
 	
 	# print message when all jobs are completed
 	wait
