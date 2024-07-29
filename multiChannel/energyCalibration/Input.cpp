@@ -23,14 +23,24 @@
 #include "Constants.h"
 #include "Convert.h"
 #include <iostream>
+#include <fstream>
+using std::ifstream;
+using std::string;
 using std::vector;
 using std::cout;
 using std::endl;
 
 
+Input::Input(TString path, vector<Module> &modules){
 
-Input::Input(TString path, const vector<const char*> &filenames, vector<Module> &modules){
-
+	ifstream tmpfile("tmpfile.txt~", std::ios::in);
+	vector<string> filenames;
+	string filename;
+	while(getline(tmpfile, filename)){
+		filenames.push_back(filename);
+	}
+	tmpfile.close();
+	
 	files = vector<TFile*>(filenames.size());
 
 	if(!path.EndsWith("/")) path += "/";

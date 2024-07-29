@@ -22,26 +22,33 @@
 #include "TDiffData.h"
 
 #include <iostream>
-
+#include <fstream>
+using std::ifstream;
+using std::string;
 using std::cout;
 using std::endl;
 using std::vector;
 
 
 
-TDiffData::TDiffData(TString path, vector<const char*> files){
+TDiffData::TDiffData(TString path){
 
 	// open files
 	chain = new TChain("tree", "tree");
 
 	if(!path.EndsWith("/")) path += "/";
 
-	for(const char *filename : files){
+	ifstream tmpfile("tmpfile.txt~", std::ios::in);
+	vector<string> filenames;
+	string filename;
 		
+	while(getline(tmpfile, filename)){
 		TString completePath = path + filename;
 		cout << "[TDiffData] Reading file " << completePath.Data() << endl;
 		chain->Add(completePath);
 	}
+
+	tmpfile.close();
 	
 
 	// find number of events

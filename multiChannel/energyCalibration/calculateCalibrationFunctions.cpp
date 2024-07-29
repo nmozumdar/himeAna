@@ -34,7 +34,7 @@ using std::endl;
 
 
 
-void calculateCalibrationFunctions(const char* trb3dir, const char* subdir, vector<const char*> filenames, int wall){
+void calculateCalibrationFunctions(const char* trb3dir, const char* subdir, int wall){
 
 	// ---------------- Import all correlation plots showing ToT vs TDiff ----------------
 	vector<Module> modules(Constants::nModules);
@@ -43,7 +43,7 @@ void calculateCalibrationFunctions(const char* trb3dir, const char* subdir, vect
 		modules[iMod].setHorizontal(Helpers::isHorizontal(wall, iMod));
 		modules[iMod].iMod = iMod;
 	}
-	Input input(TString(trb3dir) + "/data/trackingForEnergyCalibration/" + TString(subdir), filenames, modules);
+	Input input(TString(trb3dir) + "/data/trackingForEnergyCalibration/" + TString(subdir), modules);
 
 	double energy_at_which_to_calculate_dEPerE = 10.;
 	Results results;

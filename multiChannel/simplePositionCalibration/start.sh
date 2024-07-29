@@ -32,7 +32,8 @@ if [ $? -eq 0 ]; then
 
 	create_directory simplePositionCalibration "$subdir"
 
-	write_fileNames_to_tmpfile tDiff "$subdir"
+	# create a list of all root files in subdir and write it to tmpfile.txt~
+	write_filenames_to_tmpfile tDiff "$subdir"
 
 	# calculate calibration functions
 	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${thresholds}\")"

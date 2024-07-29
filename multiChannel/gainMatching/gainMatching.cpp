@@ -41,7 +41,6 @@ void gainMatching(
 	const char* trb3dir, 
 	std::vector<float> voltages, 
 	std::vector<const char*> subdirs, 
-	std::vector<std::vector<const char*>> allFiles, 
 	float desiredToT, 
 	bool linearGainFitModel, 
 	const char* outputSubdir, 
@@ -53,14 +52,6 @@ void gainMatching(
 		cout << "[gainMatching] The number of listed voltages does not match the number of subdirs!\n";
 		cout << "voltages.size() = " << voltages.size() << "\n";
 		cout << "subdirs.size() = " << subdirs.size() << endl;
-		return;
-	}
-	if(voltages.size() != allFiles.size()){
-		cout << "[gainMatching] The number of listed voltages does not match the size of allFiles!" << endl;
-		return;
-	}
-	if(subdirs.size() != allFiles.size()){
-		cout << "[gainMatching] The number of subdirs does not match the size of allFiles!" << endl;
 		return;
 	}
 
@@ -102,7 +93,7 @@ void gainMatching(
 
 		// ---------------- Input ----------------
 		// import data from the subdirectories of data/tDiff
-		TDiffData input(TString(trb3dir) + "/data/tDiff/" + TString(subdirs[iVoltage]), allFiles[iVoltage]);
+		TDiffData input(TString(trb3dir), TString(subdirs[iVoltage]));
 
 		input.fillModules(modules, iVoltage);
 		

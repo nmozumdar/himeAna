@@ -23,7 +23,9 @@
 #include "TFile.h"
 #include "Convert.h"
 #include <iostream>
-
+#include <fstream>
+using std::ifstream;
+using std::string;
 using std::cout;
 using std::endl;
 using std::vector;
@@ -31,8 +33,17 @@ using std::array;
 
 
 
-TDiffData::TDiffData(TString path, vector<const char*> filenames){
+TDiffData::TDiffData(TString trb3dir, TString subdir){
 
+	ifstream tmpfile(subdir + ".txt~", std::ios::in);
+	vector<string> filenames;
+	string filename;
+		
+	while(getline(tmpfile, filename)){
+		filenames.push_back(filename);		
+	}
+
+	TString path = trb3dir + "/data/tDiff/" + subdir;
 	if(!path.EndsWith("/")) path += "/";
 
 	paths = vector<TString>(filenames.size());

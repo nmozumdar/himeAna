@@ -33,11 +33,13 @@ if [ $? -eq 0 ]; then
 	# create directory for output
 	create_directory energyCalibration "$subdir"
 	
-	# create a list of all root files in subdir
-	get_all_files trackingForEnergyCalibration "$subdir"
+	# create a list of all root files in subdir and write it to tmpfile.txt~
+	write_filenames_to_tmpfile tDiff "$subdir"
 
 	# calculate calibration functions
-	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${ALL_FILES},${wall})"
+	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${wall})"
+
+	rm -f tmpfile.txt~
 	
 	# print message when all jobs are completed
 	wait

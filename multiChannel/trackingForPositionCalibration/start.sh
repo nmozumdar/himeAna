@@ -29,14 +29,16 @@ make
 
 if [ $? -eq 0 ]; then
 
-	# create a list of all root files in subdir
-	get_all_files unpacked "$subdir"
+	# create a list of all root files in subdir and write it to tmpfile.txt~
+	write_filenames_to_tmpfile tDiff "$subdir"
 
 	# create directory for output
 	create_directory trackingForPositionCalibration "$subdir"
 
 	# start 
-	$ROOT_CALL "tracking(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${ALL_FILES})"
+	$ROOT_CALL "tracking(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\")"
+
+	rm -f tmpfile.txt~
 	
 	wait
 	echo -e "\nstart.sh done."

@@ -25,6 +25,6 @@
 #include "TString.h"
 #include <vector>
 
-void tracking(TString trb3dir, TString subdir, std::vector<const char*> files);
+void tracking(TString trb3dir, TString subdir);
 
 #endif

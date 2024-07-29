@@ -28,12 +28,13 @@
 class Input{
 
 	public:
-	Input(TString directory, const std::vector<const char*>& filenames);
+	Input(TString directory);
 	TFile* getFile(int run, bool verbose = false);
+	inline int getNFiles() const { return filenames.size(); }
 	void closeFile(int run);
 
 	private:
-	std::vector<const char*> filenames;
+	std::vector<TString> filenames;
 	std::vector<TFile*> files;
 	TString directory;
 };

@@ -46,14 +46,14 @@ using std::vector;
 
 
 
-void tracking(TString trb3dir, TString subdir, std::vector<const char*> files){
+void tracking(TString trb3dir, TString subdir){
 
 	// ---------------- Input ----------------
 	
 	if(!subdir.EndsWith("/")) subdir += "/";
 	TString subdir_without_slash(subdir);
 	subdir_without_slash.Remove(subdir_without_slash.Length()-1, 1);
-	TDiffData input(trb3dir + "/data/tDiff/" + subdir, files);
+	TDiffData input(trb3dir + "/data/tDiff/" + subdir);
 	const int nEvents = input.getNEvents();
 
 	// ---------------- First loop over events: Fill histograms ----------------

@@ -30,7 +30,7 @@
 class TDiffData{
 	public:
 	TDiffData(){}
-	TDiffData(TString path, std::vector<const char*> files);
+	TDiffData(TString path);
 	int getNEvents() const;
 	void getEvent(long i);
 	inline float getTDiff(int hit) const { return (*tDiff)[hit]; }

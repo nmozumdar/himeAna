@@ -72,7 +72,6 @@ void simpleTrackingForEnergyCalibration(const char* trb3dir, const char* dir, co
 
 		zTrack.clear();
 		
-		//if(pi.showProgress(eventCounter) > 2 ) break;
 		pi.showProgress(eventCounter);
 		input.getEvent(eventCounter);
 

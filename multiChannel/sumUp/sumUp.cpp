@@ -45,18 +45,18 @@ using std::vector;
 //     ,/   \-o
 //  ----------------------------  
 
-void sumUp(const char* directory, vector<const char*> filenames, bool verbose){
+void sumUp(const char* directory, bool verbose){
 
 
 	// ---------------- Input ----------------
-	Input input(directory, filenames);
+	Input input(directory);
 
 
 	// ---------------- Loop over all runs ----------------
-	ProgressIndicator pi = ProgressIndicator(filenames.size(), "[sumUp] Added histograms: ");
+	ProgressIndicator pi = ProgressIndicator(input.getNFiles(), "[sumUp] Added histograms: ");
 	HistogramCollection hc;
 
-	for(Int_t run = 0; run < filenames.size(); run++){
+	for(Int_t run = 0; run < input.getNFiles(); run++){
 
 		if(!verbose) pi.showProgress(run);
 

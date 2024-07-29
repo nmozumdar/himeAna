@@ -24,6 +24,6 @@
 
 #include <vector>
 
-void sumUp(const char* directory, std::vector<const char*> filenames, bool verbose);
+void sumUp(const char* directory, bool verbose);
 
 #endif

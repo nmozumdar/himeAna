@@ -20,9 +20,13 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-#analysis=applyPositionCalibration
-analysis=tDiff
-subdir=2022-11-30b
+
+#analysis=simpleTrackingForEnergyCalibration
+analysis=applyPositionCalibration
+#analysis=tDiff
+
+subdir=2024-07-10_cosmics
+
 verbose=false
 # ------------------------------
 
@@ -32,10 +36,12 @@ make
 
 if [ $? -eq 0 ]; then
 
-	get_all_files "$analysis" "$subdir"
+	# create a list of all root files in subdir and write it to tmpfile.txt~
+	write_filenames_to_tmpfile "$analysis" "$subdir"
 
-	# calculate calibration functions
-	$ROOT_CALL "sumUp(\"${HIME_ANA_DIRECTORY}/data/${analysis}/${subdir}\",${ALL_FILES},${verbose})"
+	$ROOT_CALL "sumUp(\"${HIME_ANA_DIRECTORY}/data/${analysis}/${subdir}\",${verbose})"
+
+	rm -f tmpfile.txt~
 	
 	# print message when all jobs are completed
 	wait

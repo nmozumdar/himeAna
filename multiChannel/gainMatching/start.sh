@@ -54,17 +54,13 @@ if [ $? -eq 0 ]; then
 	vector_of_all_subdirs="{"
 	vector_of_all_voltages="{"
 	for subdir in "${subdirs[@]}"; do
-		get_all_files tDiff "$subdir"
-		echo "$subdir"
-		echo "$ALL_FILES"
-		files_of_all_subdirs="$files_of_all_subdirs""$ALL_FILES",
+		write_filenames_to_tmpfile tDiff "$subdir"
+		mv tmpfile.txt~ "$subdir".txt~
 		vector_of_all_subdirs="$vector_of_all_subdirs""\"$subdir\"",
 	done
 	for voltage in "${voltages[@]}"; do
 		vector_of_all_voltages="$vector_of_all_voltages""$voltage",
 	done
-	files_of_all_subdirs=${files_of_all_subdirs%?}
-	files_of_all_subdirs="$files_of_all_subdirs""}"
 	vector_of_all_subdirs=${vector_of_all_subdirs%?}
 	vector_of_all_subdirs="$vector_of_all_subdirs""}"
 	vector_of_all_voltages=${vector_of_all_voltages%?}
@@ -74,8 +70,12 @@ if [ $? -eq 0 ]; then
 	create_directory gainMatching "$outputSubdir"
 
 	# start 
-	$ROOT_CALL "gainMatching(\"${HIME_ANA_DIRECTORY}\",${vector_of_all_voltages},${vector_of_all_subdirs},${files_of_all_subdirs},${desiredToT},${linearGainFitModel},\"${outputSubdir}\",\"${channelMapping}\")"
+	$ROOT_CALL "gainMatching(\"${HIME_ANA_DIRECTORY}\",${vector_of_all_voltages},${vector_of_all_subdirs},${desiredToT},${linearGainFitModel},\"${outputSubdir}\",\"${channelMapping}\")"
 	
+	for subdir in "${subdirs[@]}"; do
+		rm -f "$subdir".txt~
+	done
+
 	wait
 	echo -e "\nstart.sh done."
 fi;

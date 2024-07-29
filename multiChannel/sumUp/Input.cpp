@@ -21,17 +21,27 @@
 
 #include "Input.h"
 #include <iostream>
+#include <fstream>
+using std::ifstream;
+using std::string;
 using std::cout;
 using std::endl;
 using std::vector;
 
 
 
-Input::Input(TString directory, const std::vector<const char*>& filenames){
+Input::Input(TString directory){
 	if( !directory.EndsWith("/") ) directory.Append("/");
 	cout << "[Input] Reading directory " << directory.Data() << " ..." << endl;
+
+	ifstream tmpfile("tmpfile.txt~", std::ios::in);	
+	string filename;
+	while(getline(tmpfile, filename)){
+		filenames.push_back(filename);
+	}
+	tmpfile.close();
+
 	this->directory = directory;
-	this->filenames = filenames;
 	files = vector<TFile*>(filenames.size());
 }
 

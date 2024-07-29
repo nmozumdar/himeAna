@@ -30,7 +30,7 @@
 
 class Input{
 	public:
-	Input(TString path, const std::vector<const char*> &filenames, std::vector<Module> &modules);
+	Input(TString path, std::vector<Module> &modules);
 	std::vector<TFile*> files;
 };
 

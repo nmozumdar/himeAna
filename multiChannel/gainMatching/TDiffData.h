@@ -29,7 +29,7 @@
 class TDiffData{
 	public:
 	TDiffData(){}
-	TDiffData(TString path, std::vector<const char*> filenames);
+	TDiffData(TString trb3dir, TString subdir);
 	void fillModules(std::vector<Module>& modules, int iVoltage) const;
 
 	private:
