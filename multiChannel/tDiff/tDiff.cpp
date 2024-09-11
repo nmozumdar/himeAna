@@ -60,7 +60,7 @@ using MF = hadaq::MessageFloat;
 
 
 
-void tDiff(const char *trb3dir, const char *dir, const char *filename, int trigger, bool multihit, bool write, bool plot){
+void tDiff(const char *trb3dir, const char *dir, const char *filename, const char* channelMapping, int trigger, bool multihit, bool write, bool plot){
 
 	// ---------------- Input ----------------
 
@@ -77,7 +77,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, int trigg
 	// Create a std::vector of Module objects, where each Module has an ID and two channels.
 	// In each channel, there will be sequences of hadaq::MessageFloat objects,
 	// representing the signals of a PMT.
-	vector<Module> modules = Detector::build("../../data/channelMapping/2024-06-10.csv");
+	vector<Module> modules = Detector::build("../../data/channelMapping/" + TString(channelMapping));
 	vector<int> activeChannels = Detector::getActiveChannels(modules);
 	std::sort(activeChannels.begin(), activeChannels.end());
 

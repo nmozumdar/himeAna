@@ -20,7 +20,9 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdirs=(2024-06-27 2024-06-28 2024-06-29 2024-06-30 2024-07-01 2024-06-25_cosmics)
+subdirs=(2024-09-09)
+# select the CSV file where the channel mapping is defined
+channelMapping=2024-09-03_de.csv
 trigger=-1
 # choose if you want to take only the first pulse in each bar
 # for your analysis. Otherwise, multiple hits can be detected 
@@ -43,7 +45,7 @@ if [ $? -eq 0 ]; then
 		for filename in "$HIME_ANA_DIRECTORY"/data/unpacked/"$subdir"/*.root; do
 			check_threads "$fileCounter"
 			filenameBase=$(basename "$filename")
-			$ROOT_CALL "tDiff(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${filenameBase}\",${trigger},${multihit},true,false)" > /dev/null &
+			$ROOT_CALL "tDiff(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${filenameBase}\",\"${channelMapping}\",${trigger},${multihit},true,false)" > /dev/null &
 			fileCounter=`expr ${fileCounter} + 1`
 		done
 	done

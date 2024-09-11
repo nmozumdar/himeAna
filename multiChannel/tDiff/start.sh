@@ -20,8 +20,10 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=test
-filename=test.root
+subdir=2024-09-09
+filename=himede_layer1_modules0-8_900V_0x200_0000.root
+# select the CSV file where the channel mapping is defined
+channelMapping=2024-09-03_de.csv
 trigger=-1
 # choose if you want to take only the first pulse in each bar
 # for your analysis. Otherwise, multiple hits can be detected 
@@ -42,7 +44,7 @@ if [ $? -eq 0 ]; then
 
 	# start 
 	filename=$(basename "$filename")
-	$ROOT_CALL "tDiff(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${filename}\",${trigger},${multihit},${write},${plot})" 
+	$ROOT_CALL "tDiff(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${filename}\",\"${channelMapping}\",${trigger},${multihit},${write},${plot})" 
 
 	wait
 	echo -e "\nstart.sh done."
