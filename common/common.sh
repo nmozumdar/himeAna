@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # ---------- settings ----------
-source thisroot.sh
+source /home/hime/trbsoft/trb3/rootbuild/bin/thisroot.sh
 export ROOT_CALL="root -l --web=server:8877 -e"
-export HIME_ANA_DIRECTORY="/home/user/himeAna"
+export HIME_ANA_DIRECTORY="/home/hime/himeAna"
 # ------------------------------
 
 export LD_LIBRARY_PATH=$HIME_ANA_DIRECTORY/common/lib:$LD_LIBRARY_PATH
