@@ -25,6 +25,8 @@ filename=himede_layer1_modules0-8_900V_0x200_0000.root
 # select the CSV file where the channel mapping is defined
 channelMapping=2024-09-03_de.csv
 trigger=-1
+# select the CSV file where the channel mapping is defined
+channelMapping=2024-09-03_de.csv
 # choose if you want to take only the first pulse in each bar
 # for your analysis. Otherwise, multiple hits can be detected 
 # in each module, but there might be more noise.

@@ -22,10 +22,10 @@
 # ---------- settings ----------
 
 #analysis=simpleTrackingForEnergyCalibration
-analysis=applyPositionCalibration
-#analysis=tDiff
+#analysis=applyPositionCalibration
+analysis=tDiff
 
-subdir=2024-07-10_cosmics
+subdir=2024-09-10
 
 verbose=false
 # ------------------------------
