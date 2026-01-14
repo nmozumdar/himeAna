@@ -88,6 +88,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 	HistogramCollection hc(activeChannels, nEvents);
 	ProgressIndicator pi(nEvents, "[tDiff] Processed events:");
 
+	 //for(int eventCounter = 0; eventCounter < 100; eventCounter++){
 	for(int eventCounter = 0; eventCounter < nEvents; eventCounter++){
 		output.eventNumber = eventCounter; 
 		pi.showProgress(eventCounter);

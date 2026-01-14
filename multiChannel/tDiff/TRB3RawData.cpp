@@ -71,7 +71,7 @@ TRB3RawData::TRB3RawData(TString path){
 		if(!name.BeginsWith("TDC")) continue;
 		fTdcNames[tdcCounter] = name;
 		fTree->SetBranchAddress( fTdcNames[tdcCounter], &(fTdcs[tdcCounter]) );
-		cout << "[TRB3RawData] Found TDC \"" << fTdcNames[tdcCounter] << "\"" << endl;
+		cout << "[TRB3RawData] Found TDC \"" << fTdcNames[tdcCounter] << "\"" << " tdcCounter " << tdcCounter << endl;
 		tdcCounter++;
 		if( tdcCounter >= fTdcNames.size() ) break;
 	}
@@ -105,7 +105,9 @@ std::vector<std::vector<MF*>> TRB3RawData::getMessagesSortedByChannel(int eventN
 	for(int iTDC = 0; iTDC < fTdcs.size(); iTDC++){
 		vector<MF>* messages = fTdcs[iTDC];
 		for(MF& m: *messages){
-			int ch = iTDC * Constants::nChPerTdc + (int) m.getCh() - 1;
+			//int ch = iTDC * Constants::nChPerTdc + (int) m.getCh() - 1;
+			// cabling changed for hime+
+			int ch = Constants::TDCoff[iTDC] * Constants::nChPerTdc + (int) m.getCh() - 1;
 			messagesSortedByChannel[ch].push_back(&m);
 		}
 	}

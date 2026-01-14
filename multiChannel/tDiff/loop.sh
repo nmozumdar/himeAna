@@ -20,12 +20,13 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdirs=(2024-09-09)
+subdirs=(2025-10-27b)
 # select the CSV file where the channel mapping is defined
-channelMapping=2024-09-03_de.csv
+channelMapping=2025-10-03.csv
+#channelMapping=2024-06-10.csv
 trigger=-1
 # select the CSV file where the channel mapping is defined
-channelMapping=2024-09-03_de.csv
+#channelMapping=2024-09-12_de.csv
 # choose if you want to take only the first pulse in each bar
 # for your analysis. Otherwise, multiple hits can be detected 
 # in each module, but there might be more noise.

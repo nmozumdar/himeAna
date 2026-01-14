@@ -57,11 +57,14 @@ vector<Module> Detector::build(const char* path){
 		int ch_l_u_raw 	= std::stoi(entries[2]);
 		int layer 		= std::stoi(entries[3]);
 		int sub_module 	= std::stoi(entries[4]);
-		int chain 		= std::stoi(entries[5]);
-		int tdc  		= std::stoi(entries[6]);
+		//int chain 		= std::stoi(entries[5]);
+		int tdc  		= std::stoi(entries[5]);
+		int trb			= std::stoi(entries[6]);
 
+		int tdcoff[3][4]={0,2,4,8,1,3,5,6,7,9,10,11};
 		// determine the HIME-channel number (unique for each PMT)
-		int channelOffset = chain * 16 + tdc * 48 + wall * 1000;
+		//int channelOffset = chain * 16 + tdc * 48 + wall * 1000;
+		int channelOffset = tdcoff[trb-1][tdc] * 48 + wall * 1000;
 		int ch_left_up = ch_l_u_raw + channelOffset;
 		int ch_right_down = ch_r_d_raw + channelOffset;
 		// determine the HIME-module ID (unique for each scintillator)
