@@ -48,7 +48,8 @@ if [ $? -eq 0 ]; then
 
 	# start 
 	filename=$(basename "$filename")
-	$ROOT_CALL "tDiff(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${filename}\",\"${channelMapping}\",${trigger},${multihit},${write},${plot})" 
+	#$ROOT_CALL "tDiff(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",\"${filename}\",\"${channelMapping}\",${trigger},${multihit},${write},${plot})" 
+	$ROOT_CALL "tDiff(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",\"${filename}\",\"${channelMapping}\",${trigger},${multihit},${write},${plot})" 
 
 	wait
 	echo -e "\nstart.sh done."
