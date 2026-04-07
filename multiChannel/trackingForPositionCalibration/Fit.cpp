@@ -88,7 +88,7 @@ bool Fit::checkDeviation(TGraph *track, TF1 *trackFit, vector<Module*> &modulesT
 		}
 	}
 
-	if(largestDev > 25){
+	if(largestDev > 1.2 * Constants::moduleWidth){
 
 		track->RemovePoint(pointWithLargestDev);
 		modulesThatFired.erase(modulesThatFired.begin() + pointWithLargestDev);

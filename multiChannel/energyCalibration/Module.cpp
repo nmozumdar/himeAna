@@ -53,7 +53,8 @@ void Module::setHorizontal(bool isHorizontal){
 
 void Module::createCalibrationFunction(){
 
-	const char* formula = isHorizontal ? "[0] + [1] * x" : "[0] + [1] * x + [2] * x * x" ;
+	//const char* formula = isHorizontal ? "[0] + [1] * x" : "[0] + [1] * x + [2] * x * x" ;
+	const char* formula = "[0] + [1] * x";
 	double rangeMin, rangeMax, tmp;
 	maxGraph.GetPoint(0, rangeMin, tmp);
 	maxGraph.GetPoint(maxGraph.GetN()-1, rangeMax, tmp);

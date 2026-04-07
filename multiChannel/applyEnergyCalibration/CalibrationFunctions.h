@@ -32,14 +32,13 @@ class CalibrationFunctions{
 	CalibrationFunctions(){}
 	CalibrationFunctions(TString path);
 	// Just calls "float getCalibratedValue(int moduleID, float tDiff)"
-	float operator()(int moduleID, float tDiff);
+	float operator()(int moduleID, float avgToT);
 	// If there exists a calibration function for the current module, apply the calibration and return the calibrated position.
 	// Otherwise, return -10000.
-	float getCalibratedValue(int moduleID, float tDiff);
-	float getTDiffCorr(int moduleID, float tDiff);
+	float getCalibratedValue(int moduleID, float avgToT);
 	private:
 	TFile *file;
-	std::vector<TF1*> posCalFuncs;
+	std::vector<TF1*> ECalFuncs;
 };
 
 #endif

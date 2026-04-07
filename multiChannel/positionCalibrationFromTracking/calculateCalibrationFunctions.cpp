@@ -65,7 +65,7 @@ void calculateCalibrationFunctions(TString trb3dir, TString subdir, int nCountsP
 	for(const Module& m: modules) m.write(fileOut);
 
 	// ---------------- Draw ----------------
-	Drawer dr;
-	dr.drawOverview(hc);
-	dr.drawModules(modules);
+	//Drawer dr;
+	//dr.drawOverview(hc);
+	//dr.drawModules(modules);
 }

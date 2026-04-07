@@ -34,32 +34,23 @@ CalibrationFunctions::CalibrationFunctions(TString path){
  	
 	cout << "[CalibrationFunctions] Reading file " << path.Data() << endl;
 	file = new TFile(path, "read");
-	posCalFuncs = vector<TF1*>(Constants::nModules);
-	TH1F* hVEff = (TH1F*) file->Get("hVEff");
-	TH1F* hOffs = (TH1F*) file->Get("hOffs");
+	ECalFuncs = vector<TF1*>(Constants::nModules);
 
 	for(int m = 0; m < Constants::nModules; m++){
-		TString name(TString("module_") + to_string(m).data() + TString("_posCalFunc"));
-		posCalFuncs[m] = new TF1(name, "[0] * x + [1]", -500., 500.);
-		posCalFuncs[m]->SetParameter(0, 0.5 * hVEff->GetBinContent(m+1));
-		posCalFuncs[m]->SetParameter(1, hOffs->GetBinContent(m+1));
+		TString name(TString("calibrationFunction") + to_string(m).data());
+		ECalFuncs[m] = (TF1*)file->Get(name);
 	}
 }
 
 
 
-float CalibrationFunctions::operator()(int moduleID, float tDiff){
-	return getCalibratedValue(moduleID, tDiff);
+float CalibrationFunctions::operator()(int moduleID, float avgToT){
+	return getCalibratedValue(moduleID, avgToT);
 }
 
 
 
-float CalibrationFunctions::getCalibratedValue(int moduleID, float tDiff){
-	if(posCalFuncs[moduleID]->GetParameter(0) == 0.) return -10000.;
-	return posCalFuncs[moduleID]->Eval(tDiff);
-}
-
-float CalibrationFunctions::getTDiffCorr(int moduleID, float tDiff){
-	if(posCalFuncs[moduleID]->GetParameter(0) == 0.) return -10000.;
-	return tDiff + posCalFuncs[moduleID]->GetParameter(1)/posCalFuncs[moduleID]->GetParameter(0);
+float CalibrationFunctions::getCalibratedValue(int moduleID, float avgToT){
+	if(!ECalFuncs[moduleID]) return -10000.;
+	return ECalFuncs[moduleID]->Eval(avgToT);
 }

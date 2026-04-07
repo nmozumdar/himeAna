@@ -19,27 +19,45 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "CalibrationFunctionFitter.h"
+#include "Helpers.h"
+#include "Constants.h"
+#include <cmath>
+
+using std::vector;
 
 
 
-CalibrationFunctionFitter::CalibrationFunctionFitter(){}
-
-
-
-void CalibrationFunctionFitter::fit(Module& m){
-	m.maxGraph.Fit(m.calibrationFunction, "fq0");
+int Helpers::getLayer(int moduleID){
+	return (moduleID - (moduleID % Constants::nModulesPerLayer)) / Constants::nModulesPerLayer;
 }
 
 
 
-void CalibrationFunctionFitter::setParameters(Module& m){
-//	if(m.isHorizontal){
-		m.calibrationFunction->SetParameter(0,-30);
-		m.calibrationFunction->SetParameter(1,2);
-//	}
-//	else{
-//		m.calibrationFunction->SetParameter(2,0.1);
-//		m.calibrationFunction->SetParLimits(2,0.,100.);
-//	}
+bool Helpers::isHorizontal(int moduleID){
+	return getLayer(moduleID) & 1;
+}
+
+
+
+int Helpers::countLayers(const vector<Module>& modules){
+	
+	vector<int> zValues;
+
+	for(const Module& m : modules){
+
+		int zRound = std::roundl(m.z); // round the z position of each module to 1 mm precision
+		
+		if(!vectorContainsApprox(zValues, zRound)){
+			zValues.push_back(zRound);
+		}
+	}
+	
+	return zValues.size();
+}
+
+
+
+bool Helpers::vectorContainsApprox(const vector<int>& vec, int x){
+	for(int entry : vec) if( std::abs(entry - x) <= 1 ) return true;
+	return false;
 }

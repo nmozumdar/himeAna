@@ -20,7 +20,7 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2022-11-30b
+subdir=2025-10-27b
 wall=0
 # ------------------------------
 
@@ -37,7 +37,8 @@ if [ $? -eq 0 ]; then
 	write_filenames_to_tmpfile tDiff "$subdir"
 
 	# calculate calibration functions
-	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${wall})"
+	#$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${wall})"
+	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",${wall})"
 
 	rm -f tmpfile.txt~
 	

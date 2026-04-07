@@ -19,27 +19,20 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef CalibrationFunctions_h
-#define CalibrationFunctions_h
+#ifndef CalibratedData_h
+#define CalibratedData_h
 
-#include "TF1.h"
-#include "TString.h"
 #include "TFile.h"
-#include <vector>
+#include "TTree.h"
+#include "TString.h"
 
-class CalibrationFunctions{
+class CalibratedData{
 	public:
-	CalibrationFunctions(){}
-	CalibrationFunctions(TString path);
-	// Just calls "float getCalibratedValue(int moduleID, float tDiff)"
-	float operator()(int moduleID, float tDiff);
-	// If there exists a calibration function for the current module, apply the calibration and return the calibrated position.
-	// Otherwise, return -10000.
-	float getCalibratedValue(int moduleID, float tDiff);
-	float getTDiffCorr(int moduleID, float tDiff);
+	CalibratedData(){}
+	CalibratedData(TString pathOut, TString filename);
 	private:
 	TFile *file;
-	std::vector<TF1*> posCalFuncs;
+	TTree *tree;
 };
 
 #endif

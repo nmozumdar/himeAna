@@ -19,27 +19,18 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef CalibrationFunctions_h
-#define CalibrationFunctions_h
+#ifndef Constants_h
+#define Constants_h
 
-#include "TF1.h"
-#include "TString.h"
-#include "TFile.h"
-#include <vector>
-
-class CalibrationFunctions{
-	public:
-	CalibrationFunctions(){}
-	CalibrationFunctions(TString path);
-	// Just calls "float getCalibratedValue(int moduleID, float tDiff)"
-	float operator()(int moduleID, float tDiff);
-	// If there exists a calibration function for the current module, apply the calibration and return the calibrated position.
-	// Otherwise, return -10000.
-	float getCalibratedValue(int moduleID, float tDiff);
-	float getTDiffCorr(int moduleID, float tDiff);
-	private:
-	TFile *file;
-	std::vector<TF1*> posCalFuncs;
+namespace Constants{
+	// total number of modules of the detector
+	const int nModules = 288;
+	// number of modules per layer
+	const int nModulesPerLayer = 24;
+	// width of the modules in mm
+	const float moduleWith = 40;
+	// depth of the modules in mm
+	const float moduleDepth = 20;
 };
 
 #endif

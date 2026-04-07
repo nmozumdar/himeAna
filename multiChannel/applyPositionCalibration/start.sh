@@ -20,11 +20,11 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2024-06-21_shadow_w_and_wo_sbt_combined_manually
-filename=hime_data_sbt_shadow_1039.root
-geometryFile=2024-06-21.csv
-thresholdsFile=2024-06-21.csv
-subdir_calibration=2024-06-19_cosmics
+subdir=2025-10-27b
+filename=hime_full2_0010.root
+geometryFile=2026-03-05.csv
+thresholdsFile=2024-06-211.csv
+subdir_calibration=2025-10-27b
 # ------------------------------
 
 source ../../common/common.sh
@@ -37,7 +37,8 @@ if [ $? -eq 0 ]; then
 
 	# start 
 	filename=$(basename "$filename")
-	$ROOT_CALL "applyCalibration( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", true)"
+	#$ROOT_CALL "applyCalibration( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", true)"
+	$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", true)"
 
 	wait
 	echo -e "\nstart.sh done."

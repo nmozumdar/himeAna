@@ -59,7 +59,7 @@ void tracking(TString trb3dir, TString subdir){
 	// ---------------- First loop over events: Fill histograms ----------------
 	ProgressIndicator pi(nEvents, "[tracking] Processed events:");
 	Detector hime;
-	TFile *testfile = new TFile("testfile.root", "recreate");
+	TFile *testfile = new TFile("test.root", "recreate");
 	int testCounter = 0;
 	
 
@@ -100,8 +100,9 @@ void tracking(TString trb3dir, TString subdir){
 				int hitID = hime.hitIDs[c][i];
 				int moduleID = input.getModuleID(hitID);
 				float tDiff = input.getTDiff(hitID);
+				float tot = sqrt(input.getTot0(hitID)*input.getTot1(hitID));
 				float pos = hime.getPos(moduleID);
-				hime.addHit(moduleID, pos, tDiff);
+				hime.addHit(moduleID, pos, tDiff,tot);
 			}
 		}
 	}

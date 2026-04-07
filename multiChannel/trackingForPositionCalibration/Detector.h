@@ -38,7 +38,7 @@ class Detector{
 	void setModuleFired(int moduleID, int hitID);
 	inline Module getModule(int moduleID) const { return modules[moduleID]; }
 	float getPos(int moduleID) const;
-	void addHit(int moduleID, float pos, float tDiff);
+	void addHit(int moduleID, float pos, float tDiff, float tot);
 	void writeTracks(TFile *file, int testCounter, int eventCounter);
 	void writeModules(TFile* file);
 	void addNEntriesToHistTitle();

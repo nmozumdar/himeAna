@@ -19,27 +19,9 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef CalibrationFunctions_h
-#define CalibrationFunctions_h
+#ifndef applyCalibration_h
+#define applyCalibration_h
 
-#include "TF1.h"
-#include "TString.h"
-#include "TFile.h"
-#include <vector>
-
-class CalibrationFunctions{
-	public:
-	CalibrationFunctions(){}
-	CalibrationFunctions(TString path);
-	// Just calls "float getCalibratedValue(int moduleID, float tDiff)"
-	float operator()(int moduleID, float tDiff);
-	// If there exists a calibration function for the current module, apply the calibration and return the calibrated position.
-	// Otherwise, return -10000.
-	float getCalibratedValue(int moduleID, float tDiff);
-	float getTDiffCorr(int moduleID, float tDiff);
-	private:
-	TFile *file;
-	std::vector<TF1*> posCalFuncs;
-};
+void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* thresholdsFile, const char* subdir_calibration, bool plot);
 
 #endif

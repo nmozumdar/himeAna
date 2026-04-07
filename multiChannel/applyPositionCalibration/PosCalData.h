@@ -34,6 +34,7 @@ class PosCalData{
 	std::vector<float> x;			// Position coordinate x
 	std::vector<float> y;			// Position coordinate y
 	std::vector<float> z;			// Position coordinate z
+	std::vector<float> tdiff;			// Position coordinate z
 
 	private:
 	TFile *file;

@@ -143,11 +143,12 @@ float Detector::getPos(int moduleID) const {
 
 
 
-void Detector::addHit(int moduleID, float pos, float tDiff){
+void Detector::addHit(int moduleID, float pos, float tDiff, float tot){
 
 	Module &m = modules[moduleID];
 
 	m.hPosVsTDiff->Fill(tDiff, pos);
+	m.avgToT->Fill(tot);
 }
 
 
@@ -171,6 +172,7 @@ void Detector::writeModules(TFile* file){
 	file->cd();
 	for(Module &m : modules){
 		m.hPosVsTDiff->Write();
+		m.avgToT->Write();
 	}
 }
 

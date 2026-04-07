@@ -35,6 +35,8 @@ class Module{
 	// TGraph* for (dt,pos) data pairs, where pos is either x or y, depending of the orientation of the module.
 	// This will be used to determine the position calibration function.
 	TH2F* hPosVsTDiff;
+	TH2F *hEDepVsTot_sameOA;
+	TH1F* avgToT;
 	float x;
 	float y;
 	float z;

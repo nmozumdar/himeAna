@@ -40,6 +40,8 @@ TDiffData::TDiffData(TString path){
 	tree->Branch("tDiff", &tDiff);
 	tree->Branch("tSum", &tSum);
 	tree->Branch("tofRaw", &tofRaw);
+	tree->Branch("t0", &t0);
+	tree->Branch("t1", &t1);
 	tree->Branch("tot0", &tot0);
 	tree->Branch("tot1", &tot1);
 	tree->Branch("moduleID", &moduleID);
@@ -70,6 +72,8 @@ void TDiffData::reset(int size){
 	tofRaw     = vector<float>(size);
 	tot0       = vector<float>(size);
 	tot1       = vector<float>(size);
+	t0       = vector<float>(size);
+	t1       = vector<float>(size);
 	moduleID   = vector<int>(size);
 	nHits      = 0;
 	slowScaler = 0;

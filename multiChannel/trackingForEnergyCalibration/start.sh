@@ -20,9 +20,9 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-filename=HIME_wall0_0000.root
-subdir=2022-11-30b
-geometryFile=2022-10-11.csv
+filename=hime_full2_0010.root
+subdir=2025-10-27b
+geometryFile=2026-03-05.csv
 # ------------------------------
 
 source ../../common/common.sh
@@ -35,7 +35,8 @@ if [ $? -eq 0 ]; then
 	create_directory trackingForEnergyCalibration "$subdir"
 
 	# start
-	$ROOT_CALL "fillPathLengthVsTot(\"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", true)"
+	#$ROOT_CALL "fillPathLengthVsTot(\"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", true)"
+	$ROOT_CALL "fillPathLengthVsTot(\"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", true)"
 	
 	wait
 	echo -e "\nstart.sh done."

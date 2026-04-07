@@ -31,7 +31,7 @@ namespace Constants{
 	// number of modules per layer
 	const int nModulesPerLayer = 24;
 	// number of layers per detector wall
-	const int nLayersPerWall = 6;
+	const int nLayersPerWall = 12;
 	// total number of modules of the detector
 	const int nModules = nModulesPerLayer * nLayersPerWall;
 	// total number of channels
@@ -49,9 +49,9 @@ namespace Constants{
 	// *** dimensions of gaps ***
 
 	// width of the gap between two modules of the same layer
-	const float gapWidth = 2.;
+	const float gapWidth = 1.;
 	// width of the gap between two adjacent layers
-	const float layerGap = 41;
+	const float layerGap = 21;
 	
 
 	// *** dimensions of detector walls ***

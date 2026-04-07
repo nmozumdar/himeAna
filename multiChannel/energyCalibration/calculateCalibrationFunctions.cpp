@@ -45,7 +45,7 @@ void calculateCalibrationFunctions(const char* trb3dir, const char* subdir, int 
 	}
 	Input input(TString(trb3dir) + "/data/trackingForEnergyCalibration/" + TString(subdir), modules);
 
-	double energy_at_which_to_calculate_dEPerE = 10.;
+	double energy_at_which_to_calculate_dEPerE = 6.;
 	Results results;
 
 	// print information for one of the modules
@@ -96,6 +96,6 @@ void calculateCalibrationFunctions(const char* trb3dir, const char* subdir, int 
 
 	// draw
 	Drawer dr;
-	dr.drawOverview(results);
-	dr.drawModules(modules);
+//	dr.drawOverview(results);
+//	dr.drawModules(modules);
 }

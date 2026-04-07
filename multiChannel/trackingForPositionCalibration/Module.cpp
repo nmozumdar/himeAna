@@ -30,7 +30,7 @@ using std::array;
 Module::Module(int id, int layer, bool horizontal, float x, float y, float z){
 
 	// initialize TH2F for (tDiff, pos) data pairs
-	hPosVsTDiff = new TH2F(TString("hPosVsTDiff_module_") + Convert::toNdigit(id, 3), "", 100, -20, 20, 100, -500, 500);
+	hPosVsTDiff = new TH2F(TString("hPosVsTDiff_module_") + Convert::toNdigit(id, 3), "", 200, -40, 40, 100, -800, 800);
 
 	// set title for TGraph and TH2F
 	TString title("Module ");
@@ -43,6 +43,13 @@ Module::Module(int id, int layer, bool horizontal, float x, float y, float z){
 	// set axis titles
 	hPosVsTDiff->GetXaxis()->SetTitle("\\Delta t \\mbox{ (ns)}");
 	hPosVsTDiff->GetYaxis()->SetTitle((horizontal ? TString("x") : TString("y")) + " \\mbox{ (mm)}");
+
+	avgToT = new TH1F(TString("AvgToT_module_") + Convert::toNdigit(id, 3), "", 200, 0, 50);
+	avgToT->GetXaxis()->SetTitle("ToT (arb Units)");
+
+	hEDepVsTot_sameOA = new TH2F("hEDepVsTot_sameOA" + Convert::toNdigit(id, 3), title, 90, 0, 30, 80, 0, 40);
+        hEDepVsTot_sameOA->GetXaxis()->SetTitle("ToT (ns)");
+        hEDepVsTot_sameOA->GetYaxis()->SetTitle("Energy deposition (MeV)");
 
 	this->x = x;
 	this->y = y;

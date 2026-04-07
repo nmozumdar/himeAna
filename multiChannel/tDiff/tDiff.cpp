@@ -107,6 +107,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 		output.fastScaler = input.getFastScaler();
 
 		// determine the reference time to calculate the uncalibrated ToF
+		// TODO: Remove this. Its already reference time subtracted. Maybe add time of SBT later 
 		std::array<float,2> referencePulse;
 		bool refTimeFound = PulseAna::findPulse(messagesSortedByChannel[0], referencePulse);
 
@@ -163,18 +164,23 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 					float tSum = timeStamps_right_down[0] + timeStamps_left_up[0];
 					output.tSum.push_back(tSum);
 					// uncalibrated ToF
+					// TODO: Again no meaning currently but maybe subtract with SBT time when present 
 					float tof = tSum/2. - referencePulse[0];
 					output.tofRaw.push_back(tof);
-					// ToT of the PMT on the left/top side
-					float tot_left_up = timeStamps_left_up[1] - timeStamps_left_up[0];
-					output.tot0.push_back(tot_left_up);
 					// ToT of the PMT on the right/bottom side
 					float tot_right_down = timeStamps_right_down[1] - timeStamps_right_down[0];
-					output.tot1.push_back(tot_right_down);
+					output.tot0.push_back(tot_right_down);
+					// ToT of the PMT on the left/top side
+					float tot_left_up = timeStamps_left_up[1] - timeStamps_left_up[0];
+					output.tot1.push_back(tot_left_up);
 					// ID of the module that was hit
 					output.moduleID.push_back(m.getID());
 					// count the number of hits in this event
 					output.nHits++;
+					// Time of the PMT on the right/bottom side
+					output.t0.push_back(timeStamps_right_down[0]);
+					// Time of the PMT on the left/top side
+					output.t1.push_back(timeStamps_left_up[0]);
 					// fill histograms that are required for the further analysis,
 					// such as position calibration and gain matching
 					m.fillHistograms(tDiff, tot_left_up, tot_right_down);

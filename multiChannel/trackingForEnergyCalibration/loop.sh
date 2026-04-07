@@ -20,8 +20,8 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2022-11-30b
-geometryFile=2022-10-11.csv
+subdir=2025-10-27b
+geometryFile=2026-03-05.csv
 # ------------------------------
 
 source ../../common/common.sh
@@ -35,7 +35,7 @@ if [ $? -eq 0 ]; then
 	# create directory for output
 	create_directory trackingForEnergyCalibration "$subdir"
 	
-	for filename in "$HIME_ANA_DIRECTORY"/data/applyPositionCalibration/"$subdir"/*.root; do
+	for filename in "$HIME_DATA_DIRECTORY"/data/applyPositionCalibration/"$subdir"/*.root; do
 		check_threads "$fileCounter"
 		filenameBase=$(basename "$filename")
 		$ROOT_CALL "fillPathLengthVsTot( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filenameBase}\", \"${geometryFile}\", false)" > /dev/null &

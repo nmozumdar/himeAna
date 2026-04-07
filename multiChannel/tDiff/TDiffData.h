@@ -41,6 +41,8 @@ class TDiffData{
 
 	// *** The following data is written to the TTree ***
 	std::vector<float> tDiff;				// Time difference between the rising signals of PMT 0 and 1
+	std::vector<float> t0;				// Leading edge PMT 0
+	std::vector<float> t1;				// Leading edge PMT 1
 	std::vector<float> tSum;				// Sum of the times of the rising signals of PMT 0 and 1
 	std::vector<float> tofRaw;              // Time difference relative to a reference channel
 	std::vector<float> tot0;				// Time over threshold of PMT 0

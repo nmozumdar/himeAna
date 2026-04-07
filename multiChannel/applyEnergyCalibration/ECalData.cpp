@@ -19,7 +19,7 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "PosCalData.h"
+#include "ECalData.h"
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -27,39 +27,38 @@ using std::to_string;
 
 
 
-PosCalData::PosCalData(TString path, TDiffData &input){
+ECalData::ECalData(TString path, PosCalData &input){
 
 	// create TFile and TTree
-	cout << "[PosCalData] Writing file " << path.Data() << endl;
+	cout << "[ECalData] Writing file " << path.Data() << endl;
 	file = new TFile(path, "recreate");
 	tree = new TTree("tree", "tree");
 
 	// *** The following data is written to the TTree ***
 	// create branches
-	tree->Branch("x", &x);                                              // Position coordinate x
-	tree->Branch("y", &y);                                              // Position coordinate y
-	tree->Branch("z", &z);                                              // Position coordinate z
-	tree->Branch("tDiff", &tdiff);                              // Corrected Time difference between the rising signals of PMT 0 and 1
+	
+	tree->Branch("energy", &energy);                                              // Energy in MeVee
+	tree->Branch("x", &(input.x));                                              // Position coordinate x
+	tree->Branch("y", &(input.y));                                              // Position coordinate y
+	tree->Branch("z", &(input.z));                                              // Position coordinate z
+	tree->Branch("tDiff", &(input.tDiff));                              // Corrected Time difference between the rising signals of PMT 0 and 1
 	tree->Branch("tSum", &(input.tSum));                                // Sum of the times of the rising signals of PMT 0 and 1
-	tree->Branch("tofRaw", &(input.tofRaw));                            // Uncalibrated time of flight
 	tree->Branch("tot0", &(input.tot0));                                // Time over threshold of PMT 0
 	tree->Branch("tot1", &(input.tot1));                                // Time over threshold of PMT 1
 	tree->Branch("moduleID", &(input.moduleID));                        // Identification number of the corresponding module
 	tree->Branch("nHits", &(input.nHits), "nHits/I");                   // Number of hits in each event
-	tree->Branch("slowScaler", &(input.slowScaler), "slowScaler/g");	// Value of the fast scaler
-	tree->Branch("fastScaler", &(input.fastScaler), "fastScaler/g");	// Value of the slow scaler
-	tree->Branch("eventNumber", &(input.eventNumber), "eventNumber/g");	// Event number
+	tree->Branch("eventNumber", &(input.eventNumber), "eventNumber/g");
 }
 
 
 
-void PosCalData::fill(){
+void ECalData::fill(){
 	tree->Fill();
 }
 
 
 
-void PosCalData::write(){
+void ECalData::write(){
 	file->cd();
 	tree->Write();
 }

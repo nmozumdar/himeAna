@@ -71,10 +71,10 @@ void fillPathLengthVsTot(const char *trb3dir, const char *subdir, const char* fi
 		// identify cosmics with a cut on ToT
 		for(int hitID = 0; hitID < input.nHits; hitID++){
 
-			if(Helpers::tot(input, hitID) > thrs[input.getModuleID(hitID)] - 2.){
+		//	if(Helpers::tot(input, hitID) > thrs[input.getModuleID(hitID)] - 2.){
 
 				track.addHit(input, hitID);
-			}
+		//	}
 		}
 		
 		bool success = Fit::fitLoopForTracking(track, hime);
@@ -108,6 +108,6 @@ void fillPathLengthVsTot(const char *trb3dir, const char *subdir, const char* fi
 	hime.write(pathOut);
 
 	if(!plot) return;
-	dr.drawPosVsTDiff(hime);
-	dr.drawEDepVsTot(hime);
+//	dr.drawPosVsTDiff(hime);
+//	dr.drawEDepVsTot(hime);
 }
