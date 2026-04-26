@@ -22,17 +22,25 @@
 #ifndef Fit_h
 #define Fit_h
 
-#include "Detector.h"
+#include "Module.h"
+#include "TH1D.h"
+#include <vector>
 
-namespace Fit{
-	/*
-		Functions to fit sets of (x,z) and (y,z) data pairs
-	*/
-	bool fitLoopForTracks(Detector &d);
-	void fit(TGraph *track, TF1 *trackFit);
-	bool checkDeviation(TGraph *track, TF1 *trackFit, std::vector<Module*> &modulesThatFired, std::vector<int> &hitIDs, std::vector<float> &T_sum);
-	float calculateDeviation(int point, const TGraph *track, const TF1 *trackFit);
-	int nLayers(const std::vector<Module*> &modulesThatFired);
+class Fit{
+	public:
+	Fit(){}
+	Fit(int minCountsPerProjection, int minProjections);
+	void perform(std::vector<Module>& modules);
+	private:
+	bool findStartAndStopBins(Module& m);
+	void fitGaussians(Module& m);
+	void fitCalibrationFunctions(Module& m);
+	void calcTSyncs(Module& m);
+	int minCountsPerProjection;
+	int minProjections;
+	int startBin;
+	int stopBin;
+	int nBins;
 };
 
 #endif

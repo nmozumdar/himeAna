@@ -37,6 +37,8 @@ class Module{
 	TH2F* hPosVsTDiff;
 	TH2F *hEDepVsTot_sameOA;
 	TH1F* avgToT;
+	TH1F* hDtNextBar;
+	TH2F* hDtNextPlane;
 	float x;
 	float y;
 	float z;

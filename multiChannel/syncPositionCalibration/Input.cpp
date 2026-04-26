@@ -19,20 +19,22 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Fit_h
-#define Fit_h
+#include "Input.h"
+#include "Constants.h"
+#include "Convert.h"
+using std::vector;
 
-#include "Detector.h"
 
-namespace Fit{
-	/*
-		Functions to fit sets of (x,z) and (y,z) data pairs
-	*/
-	bool fitLoopForTracks(Detector &d);
-	void fit(TGraph *track, TF1 *trackFit);
-	bool checkDeviation(TGraph *track, TF1 *trackFit, std::vector<Module*> &modulesThatFired, std::vector<int> &hitIDs, std::vector<float> &T_sum);
-	float calculateDeviation(int point, const TGraph *track, const TF1 *trackFit);
-	int nLayers(const std::vector<Module*> &modulesThatFired);
-};
 
-#endif
+Input::Input(TString path, vector<Module>& modules){
+	
+	modules = vector<Module>(Constants::nModules);
+	file = new TFile(path, "read");
+
+	for(int moduleID = 0; moduleID < Constants::nModules; moduleID++){
+		TString histName("hPosVsTDiff_module_" + Convert::toNdigit(moduleID, 3));
+		TString histName1("hDtNextBar_module_" + Convert::toNdigit(moduleID, 3));
+		TString histName2("hDtNextPlane_module_" + Convert::toNdigit(moduleID, 3));
+		modules[moduleID] = Module(moduleID, (TH2F*) file->Get(histName), (TH1F*) file->Get(histName1), (TH2F*) file->Get(histName2));
+	}
+}

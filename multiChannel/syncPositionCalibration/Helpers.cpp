@@ -19,20 +19,28 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Fit_h
-#define Fit_h
+#include "Helpers.h"
+using std::vector;
 
-#include "Detector.h"
 
-namespace Fit{
-	/*
-		Functions to fit sets of (x,z) and (y,z) data pairs
-	*/
-	bool fitLoopForTracks(Detector &d);
-	void fit(TGraph *track, TF1 *trackFit);
-	bool checkDeviation(TGraph *track, TF1 *trackFit, std::vector<Module*> &modulesThatFired, std::vector<int> &hitIDs, std::vector<float> &T_sum);
-	float calculateDeviation(int point, const TGraph *track, const TF1 *trackFit);
-	int nLayers(const std::vector<Module*> &modulesThatFired);
-};
 
-#endif
+int Helpers::getLayer(int m){
+	int nModulesPerLayer = 24;
+	int remainder = m % 24;
+	return (m - remainder) / 24;
+}
+
+
+
+bool Helpers::isHorizontal(int w, int m){
+	int l = getLayer(m);
+	if(w) return ! ( l & 1 );
+	return ( l & 1 );
+}
+
+
+
+bool Helpers::vectorContains(const vector<int>& v, int i){
+	for(int entry : v) if(entry == i) return true;
+	return false;
+}

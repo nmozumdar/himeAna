@@ -19,20 +19,8 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Fit_h
-#define Fit_h
-
-#include "Detector.h"
-
-namespace Fit{
-	/*
-		Functions to fit sets of (x,z) and (y,z) data pairs
-	*/
-	bool fitLoopForTracks(Detector &d);
-	void fit(TGraph *track, TF1 *trackFit);
-	bool checkDeviation(TGraph *track, TF1 *trackFit, std::vector<Module*> &modulesThatFired, std::vector<int> &hitIDs, std::vector<float> &T_sum);
-	float calculateDeviation(int point, const TGraph *track, const TF1 *trackFit);
-	int nLayers(const std::vector<Module*> &modulesThatFired);
-};
-
-#endif
+{
+  std::cout << "Loading rootlogon.C..." << std::endl;
+  gROOT->ProcessLine(".L calculateCalibrationFunctions.h");
+  gROOT->ProcessLine(".L libCalibration.so");
+}

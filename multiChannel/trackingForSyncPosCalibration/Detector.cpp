@@ -86,15 +86,19 @@ void Detector::resetTracks(){
 	for(vector<int> &ids : hitIDs){
 		ids.clear();
 	}
+	for(vector<float> &tsums : T_sum){
+		tsums.clear();
+	}
 }
 
 
 
-void Detector::setModuleFired(int moduleID, int hitID){
+void Detector::setModuleFired(int moduleID, int hitID, float tsum){
 	
 	bool horiz = isHorizontal(moduleID);
 	modulesThatFired[!horiz].push_back(&(modules[moduleID]));
 	hitIDs[!horiz].push_back(hitID);
+	T_sum[!horiz].push_back(tsum);
 	Module &mod = modules[moduleID];
 	TGraph *track = tracks[!horiz];
 
@@ -143,12 +147,55 @@ float Detector::getPos(int moduleID) const {
 
 
 
-void Detector::addHit(int moduleID, float pos, float tDiff, float tot){
+void Detector::addHit(int moduleID, float pos, float tDiff, float tot, float tsum){
 
 	Module &m = modules[moduleID];
 
 	m.hPosVsTDiff->Fill(tDiff, pos);
 	m.avgToT->Fill(tot);
+
+	bool horiz = isHorizontal(moduleID);
+
+	float z_front = modules[0].z;
+	float c = 299.79; // mm/ns
+
+	float z = m.z;
+	float slope_x = trackFits[0]->GetParameter(1);
+	float slope_y = trackFits[1]->GetParameter(1);
+	float T_geometric = (z - z_front) * sqrt(1 + slope_x*slope_x + slope_y*slope_y) / c;
+	float T_mean_corr = 0.5 * tsum - T_geometric;
+
+	for(int i = 0; i < hitIDs[!horiz].size(); i++)
+	{
+		auto mod = modulesThatFired[!horiz][i];
+		Module *modp1 = &modules[moduleID+1];
+		if((m.layer == mod->layer) && (mod == modp1) && (moduleID+1)%24 != 0)
+		{
+			float z2 = mod->z;
+			float T_geometric2 = (z2 - z_front) * sqrt(1 + slope_x*slope_x + slope_y*slope_y) / c;
+			float T_mean_corr2 = 0.5 * T_sum[!horiz][i] - T_geometric2;
+			float DT = T_mean_corr2 - T_mean_corr;
+			m.hDtNextBar->Fill(DT);
+		}
+	}
+
+	for(int i = 0; i < hitIDs[horiz].size(); i++)
+	{
+		auto mod = modulesThatFired[horiz][i];
+		if(((m.layer+1) == mod->layer) && ((m.layer+1) < Constants::nLayersPerWall))
+		{
+			float z2 = mod->z;
+			float T_geometric2 = (z2 - z_front) * sqrt(1 + slope_x*slope_x + slope_y*slope_y) / c;
+			float T_mean_corr2 = 0.5 * T_sum[horiz][i] - T_geometric2;
+			float DT = T_mean_corr2 - T_mean_corr;
+			for(int j = 0 ; j < Constants::nModules; j++){
+				Module *modp1 = &modules[j];
+				if(mod == modp1)
+					m.hDtNextPlane->Fill((j)%24,DT);
+			}
+		}
+	}
+
 }
 
 
@@ -173,6 +220,8 @@ void Detector::writeModules(TFile* file){
 	for(Module &m : modules){
 		m.hPosVsTDiff->Write();
 		m.avgToT->Write();
+		m.hDtNextBar->Write();
+		m.hDtNextPlane->Write();
 	}
 }
 

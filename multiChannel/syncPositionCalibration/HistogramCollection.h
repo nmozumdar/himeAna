@@ -19,20 +19,22 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Fit_h
-#define Fit_h
+#ifndef HistogramCollection_h
+#define HistogramCollection_h
 
-#include "Detector.h"
+#include "TH1F.h"
+#include "TFile.h"
+#include "Module.h"
+#include <vector>
 
-namespace Fit{
-	/*
-		Functions to fit sets of (x,z) and (y,z) data pairs
-	*/
-	bool fitLoopForTracks(Detector &d);
-	void fit(TGraph *track, TF1 *trackFit);
-	bool checkDeviation(TGraph *track, TF1 *trackFit, std::vector<Module*> &modulesThatFired, std::vector<int> &hitIDs, std::vector<float> &T_sum);
-	float calculateDeviation(int point, const TGraph *track, const TF1 *trackFit);
-	int nLayers(const std::vector<Module*> &modulesThatFired);
+class HistogramCollection{
+	public:
+	HistogramCollection();
+	void fill(std::vector<Module>& modules);
+	void write(TFile* file);
+	TH1F hVEff;
+	TH1F hOffs;
+	TH1F htSync;
 };
 
 #endif

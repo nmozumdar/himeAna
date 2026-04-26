@@ -19,20 +19,18 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Fit_h
-#define Fit_h
+#ifndef Drawer_h
+#define Drawer_h
 
-#include "Detector.h"
+#include "Module.h"
+#include "HistogramCollection.h"
+#include <vector>
 
-namespace Fit{
-	/*
-		Functions to fit sets of (x,z) and (y,z) data pairs
-	*/
-	bool fitLoopForTracks(Detector &d);
-	void fit(TGraph *track, TF1 *trackFit);
-	bool checkDeviation(TGraph *track, TF1 *trackFit, std::vector<Module*> &modulesThatFired, std::vector<int> &hitIDs, std::vector<float> &T_sum);
-	float calculateDeviation(int point, const TGraph *track, const TF1 *trackFit);
-	int nLayers(const std::vector<Module*> &modulesThatFired);
+class Drawer{
+	public:
+	Drawer(){}
+	void drawOverview(HistogramCollection& hc);
+	void drawModules(std::vector<Module>& modules);
 };
 
 #endif

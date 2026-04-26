@@ -20,8 +20,12 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-#subdir=2025-10-27b/
-subdir=test/
+#subdir=2025-10-27b
+subdir=test
+# number of counts required in each projection in order to apply a Gaussian fit
+nCountsPerProjection=320
+# number of projections required in order to perform a fit of the linear position-calibration function
+nProjections=4
 # ------------------------------
 
 source ../../common/common.sh
@@ -30,18 +34,13 @@ make
 
 if [ $? -eq 0 ]; then
 
-	# create a list of all root files in subdir and write it to tmpfile.txt~
-	write_filenames_to_tmpfile tDiff "$subdir"
-
 	# create directory for output
-	#create_directory trackingForPositionCalibration "$subdir"
-
-	# start 
-	#$ROOT_CALL "tracking(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\")"
-	$ROOT_CALL "tracking(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\")"
-
-	rm -f tmpfile.txt~
+	create_directory positionCalibrationFromTracking "$subdir"
 	
+	# start 
+	#$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${nCountsPerProjection},${nProjections})" 
+	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",${nCountsPerProjection},${nProjections})" 
+
 	wait
 	echo -e "\nstart.sh done."
 fi;

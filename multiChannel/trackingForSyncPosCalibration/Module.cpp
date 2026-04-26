@@ -31,6 +31,8 @@ Module::Module(int id, int layer, bool horizontal, float x, float y, float z){
 
 	// initialize TH2F for (tDiff, pos) data pairs
 	hPosVsTDiff = new TH2F(TString("hPosVsTDiff_module_") + Convert::toNdigit(id, 3), "", 200, -40, 40, 100, -800, 800);
+	hDtNextBar = new TH1F(TString("hDtNextBar_module_") + Convert::toNdigit(id, 3), "", 200, -40, 40);
+	hDtNextPlane = new TH2F(TString("hDtNextPlane_module_") + Convert::toNdigit(id, 3), "", 25, -0.5, 24.5, 200, -40, 40);
 
 	// set title for TGraph and TH2F
 	TString title("Module ");
@@ -50,6 +52,11 @@ Module::Module(int id, int layer, bool horizontal, float x, float y, float z){
 	hEDepVsTot_sameOA = new TH2F("hEDepVsTot_sameOA" + Convert::toNdigit(id, 3), title, 90, 0, 30, 80, 0, 40);
         hEDepVsTot_sameOA->GetXaxis()->SetTitle("ToT (ns)");
         hEDepVsTot_sameOA->GetYaxis()->SetTitle("Energy deposition (MeV)");
+
+
+	hDtNextPlane->GetYaxis()->SetTitle("#Delta t (ns)");
+	hDtNextPlane->GetXaxis()->SetTitle("Module");
+	hDtNextBar->GetXaxis()->SetTitle("#Delta t (ns)");
 
 	this->x = x;
 	this->y = y;

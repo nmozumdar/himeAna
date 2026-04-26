@@ -75,7 +75,7 @@ void tracking(TString trb3dir, TString subdir){
 		// look up which modules have registered a hit in the current event
 		// -> this defines the coordinate pairs (x,z) and (y,z), to which a linear fit is applied
 		for(int i = 0; i < input.nHits; i++){
-			hime.setModuleFired(input.getModuleID(i), i);
+			hime.setModuleFired(input.getModuleID(i), i, input.getTSum(i));
 		}
 
 		bool success = Fit::fitLoopForTracks(hime);
@@ -102,17 +102,8 @@ void tracking(TString trb3dir, TString subdir){
 				float tDiff = input.getTDiff(hitID);
 				float tot = sqrt(input.getTot0(hitID)*input.getTot1(hitID));
 				float pos = hime.getPos(moduleID);
-				hime.addHit(moduleID, pos, tDiff,tot);
-
-
-				//For sync cal
-
-				float tSum = input.tSum->at(hitID);
-				float z = hime.modules[moduleID].z;
-				float slope_x = hime.trackFits[0]->GetParameter(1);
-				float slope_y = hime.trackFits[1]->GetParameter(1);
-				float T_geometric = (z - z_front) * sqrt(1 + slope_x*slope_x + slope_y*slope_y) / c;
-				float T_mean_corr = 0.5 * tSum - T_geometric;
+				float tsum = input.getTSum(hitID);
+				hime.addHit(moduleID, pos, tDiff, tot, tsum);
 			}
 		}
 	}

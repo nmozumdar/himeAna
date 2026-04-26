@@ -35,10 +35,10 @@ class Detector{
 	public: 
 	Detector();
 	void resetTracks();
-	void setModuleFired(int moduleID, int hitID);
+	void setModuleFired(int moduleID, int hitID, float tsum);
 	inline Module getModule(int moduleID) const { return modules[moduleID]; }
 	float getPos(int moduleID) const;
-	void addHit(int moduleID, float pos, float tDiff, float tot);
+	void addHit(int moduleID, float pos, float tDiff, float tot, float tsum);
 	void writeTracks(TFile *file, int testCounter, int eventCounter);
 	void writeModules(TFile* file);
 	void addNEntriesToHistTitle();
@@ -49,6 +49,7 @@ class Detector{
 	std::array<TF1*,2> trackFits;
 	std::array<std::vector<Module*>,2> modulesThatFired;
 	std::array<std::vector<int>,2> hitIDs;
+	std::array<std::vector<float>,2> T_sum;
 
 	std::array<Module, Constants::nModules> modules;
 

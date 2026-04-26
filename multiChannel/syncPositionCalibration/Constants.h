@@ -44,6 +44,8 @@ namespace Constants{
 	const float moduleWidth = 40;
 	// depth of a module
 	const float moduleDepth = 20;
+	// length of a module
+	const float moduleLength = 1000;
 
 
 	// *** dimensions of gaps ***

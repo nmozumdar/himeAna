@@ -51,7 +51,7 @@ bool Fit::fitLoopForTracks(Detector &d){
 			// perform the fit
 			fit(d.tracks[c], d.trackFits[c]);
 			// find the point with the largest deviation to the data and remove it if necessary
-			largeDeviation = checkDeviation(d.tracks[c], d.trackFits[c], d.modulesThatFired[c]);
+			largeDeviation = checkDeviation(d.tracks[c], d.trackFits[c], d.modulesThatFired[c], d.hitIDs[c], d.T_sum[c]);
 		}
 	}
 
@@ -67,7 +67,7 @@ void Fit::fit(TGraph *track, TF1 *trackFit){
 
 
 
-bool Fit::checkDeviation(TGraph *track, TF1 *trackFit, vector<Module*> &modulesThatFired){
+bool Fit::checkDeviation(TGraph *track, TF1 *trackFit, vector<Module*> &modulesThatFired, vector<int> &hitIDs, vector<float> &T_sum){
 
 	double z, pos;
 
@@ -92,6 +92,8 @@ bool Fit::checkDeviation(TGraph *track, TF1 *trackFit, vector<Module*> &modulesT
 
 		track->RemovePoint(pointWithLargestDev);
 		modulesThatFired.erase(modulesThatFired.begin() + pointWithLargestDev);
+		hitIDs.erase(hitIDs.begin() + pointWithLargestDev);
+		T_sum.erase(T_sum.begin() + pointWithLargestDev);
 		return true;
 	}
 
@@ -115,7 +117,7 @@ float Fit::calculateDeviation(int point, const TGraph *track, const TF1 *trackFi
 
 // Count the numer of layers in which at least one module fired
 int Fit::nLayers(const vector<Module*> &modulesThatFired){
-	vector<bool> layerFired(5,false);
+	vector<bool> layerFired(Constants::nLayersPerWall,false);
 	for(const Module *m : modulesThatFired) layerFired[m->layer] = true;
 	int sum = 0;
 	for(int i : layerFired) sum += i;

@@ -19,20 +19,20 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Fit_h
-#define Fit_h
+#ifndef TSyncSolver_h
+#define TSyncSolver_h
 
-#include "Detector.h"
+#include "Module.h"
+#include "Constants.h"
+#include <vector>
 
-namespace Fit{
-	/*
-		Functions to fit sets of (x,z) and (y,z) data pairs
-	*/
-	bool fitLoopForTracks(Detector &d);
-	void fit(TGraph *track, TF1 *trackFit);
-	bool checkDeviation(TGraph *track, TF1 *trackFit, std::vector<Module*> &modulesThatFired, std::vector<int> &hitIDs, std::vector<float> &T_sum);
-	float calculateDeviation(int point, const TGraph *track, const TF1 *trackFit);
-	int nLayers(const std::vector<Module*> &modulesThatFired);
+class TSyncSolver {
+public:
+    static void solve(std::vector<Module>& modules);
+    double Sqr(const double val)
+    {
+	    return val * val;
+    }
 };
 
 #endif

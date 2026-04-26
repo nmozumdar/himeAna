@@ -19,20 +19,30 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Fit_h
-#define Fit_h
+#include "Module.h"
+#include "Convert.h"
+#include "Constants.h"
 
-#include "Detector.h"
+using std::array;
 
-namespace Fit{
-	/*
-		Functions to fit sets of (x,z) and (y,z) data pairs
-	*/
-	bool fitLoopForTracks(Detector &d);
-	void fit(TGraph *track, TF1 *trackFit);
-	bool checkDeviation(TGraph *track, TF1 *trackFit, std::vector<Module*> &modulesThatFired, std::vector<int> &hitIDs, std::vector<float> &T_sum);
-	float calculateDeviation(int point, const TGraph *track, const TF1 *trackFit);
-	int nLayers(const std::vector<Module*> &modulesThatFired);
-};
+Module::Module(){
+	calibrationSuccessful = false;
+}
 
-#endif
+
+
+Module::Module(int id, const TH2F* hPosVsTDiff, const TH1F* hDtNextBar, const TH2F* hDtNextPlane){
+	this -> id = id;
+	this -> hPosVsTDiff = TH2F(*hPosVsTDiff);
+	this -> hDtNextBar = TH1F(*hDtNextBar);
+	this -> hDtNextPlane = TH2F(*hDtNextPlane);
+	posCalFunc = new TF1("posCalFunc_" + Convert::toNdigit(id, 3), "[0] / 2. * x + [1]", -Constants::moduleLength / 2., Constants::moduleLength / 2.);
+	calibrationSuccessful = false;
+}
+
+
+
+void Module::write(TFile* file) const {
+	file->cd();
+	hPosVsTDiff.Write();
+}
