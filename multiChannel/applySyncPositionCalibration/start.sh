@@ -21,11 +21,10 @@
 
 # ---------- settings ----------
 subdir=2025-10-27b
-#subdir=test
-# number of counts required in each projection in order to apply a Gaussian fit
-nCountsPerProjection=160
-# number of projections required in order to perform a fit of the linear position-calibration function
-nProjections=4
+filename=hime_full2_0010.root
+geometryFile=2026-03-05.csv
+thresholdsFile=2024-06-211.csv
+subdir_calibration=2025-10-27b
 # ------------------------------
 
 source ../../common/common.sh
@@ -34,12 +33,12 @@ make
 
 if [ $? -eq 0 ]; then
 
-	# create directory for output
-	create_directory positionCalibrationFromTracking "$subdir"
-	
+	create_directory applyPositionCalibration "$subdir"
+
 	# start 
-	#$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${nCountsPerProjection},${nProjections})" 
-	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",${nCountsPerProjection},${nProjections})" 
+	filename=$(basename "$filename")
+	#$ROOT_CALL "applyCalibration( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", true)"
+	$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", true)"
 
 	wait
 	echo -e "\nstart.sh done."

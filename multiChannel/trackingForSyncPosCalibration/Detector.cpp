@@ -163,7 +163,7 @@ void Detector::addHit(int moduleID, float pos, float tDiff, float tot, float tsu
 	float slope_x = trackFits[0]->GetParameter(1);
 	float slope_y = trackFits[1]->GetParameter(1);
 	float T_geometric = (z - z_front) * sqrt(1 + slope_x*slope_x + slope_y*slope_y) / c;
-	float T_mean_corr = 0.5 * tsum - T_geometric;
+	float T_mean_corr = 0.5 * tsum;// - T_geometric;
 
 	for(int i = 0; i < hitIDs[!horiz].size(); i++)
 	{
@@ -173,7 +173,7 @@ void Detector::addHit(int moduleID, float pos, float tDiff, float tot, float tsu
 		{
 			float z2 = mod->z;
 			float T_geometric2 = (z2 - z_front) * sqrt(1 + slope_x*slope_x + slope_y*slope_y) / c;
-			float T_mean_corr2 = 0.5 * T_sum[!horiz][i] - T_geometric2;
+			float T_mean_corr2 = 0.5 * T_sum[!horiz][i];// - T_geometric2;
 			float DT = T_mean_corr2 - T_mean_corr;
 			m.hDtNextBar->Fill(DT);
 		}
@@ -186,7 +186,7 @@ void Detector::addHit(int moduleID, float pos, float tDiff, float tot, float tsu
 		{
 			float z2 = mod->z;
 			float T_geometric2 = (z2 - z_front) * sqrt(1 + slope_x*slope_x + slope_y*slope_y) / c;
-			float T_mean_corr2 = 0.5 * T_sum[horiz][i] - T_geometric2;
+			float T_mean_corr2 = 0.5 * T_sum[horiz][i];// - T_geometric2;
 			float DT = T_mean_corr2 - T_mean_corr;
 			for(int j = 0 ; j < Constants::nModules; j++){
 				Module *modp1 = &modules[j];
@@ -195,7 +195,6 @@ void Detector::addHit(int moduleID, float pos, float tDiff, float tot, float tsu
 			}
 		}
 	}
-
 }
 
 
