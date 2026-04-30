@@ -25,15 +25,15 @@
 
 namespace Constants{
 	// number of peripheral TDCs
-	const int nTdcs = 12;
+	const int nTdcs = 16;
 	// number of channels per TDC
 	const int nChPerTdc = 48;
 	// total number of channels
 	const int nChTot = nTdcs * nChPerTdc;
 	// total number of modules of the detector
-	const int nModules = 288;
+	const int nModules = 384;
 	// hime+ cabling is not sequential
-	const int TDCoff[12]={1,3,5,6,7,9,10,11,0,2,4,8};
+	const int TDCoff[nTdcs]={1,3,5,6,7,9,10,11,0,2,4,8,12,13,14,15};
 };
 
 #endif
