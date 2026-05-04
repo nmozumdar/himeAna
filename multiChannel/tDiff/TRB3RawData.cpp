@@ -80,7 +80,7 @@ TRB3RawData::TRB3RawData(TString path){
 	runInfo = nullptr;
 	scalers = nullptr;
 	fTree->SetBranchAddress("HLD", &runInfo);
-	fTree->SetBranchAddress("SCALER_3800", &scalers);
+	fTree->SetBranchAddress("SCALER_C001", &scalers);
 }
 
 

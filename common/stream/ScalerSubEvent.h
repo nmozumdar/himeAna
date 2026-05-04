@@ -36,13 +36,15 @@ namespace hadaq {
      * \ingroup stream_hadaq_classes */
 
 	struct ScalerSubEvent : public base::SubEvent {
+		bool valid = true;
 		uint64_t scaler1 = 0;    ///< scaler 1
 		uint64_t scaler2 = 0;    ///< scaler 1
 
 		ScalerSubEvent() = default;
 
-		ScalerSubEvent(uint64_t s1, uint64_t s2)
+		ScalerSubEvent(uint64_t s1, uint64_t s2, bool v = true)
 		{
+			valid = v;
 			scaler1 = s1;
 			scaler2 = s2;
 		}
@@ -50,6 +52,7 @@ namespace hadaq {
 		/** clear sub event */
 		void Clear() override
 		{
+			valid = true;
 			scaler1 = 0;
 			scaler2 = 0;
 		}

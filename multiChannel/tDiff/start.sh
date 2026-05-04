@@ -20,15 +20,16 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-#subdir=2025-02-13
-subdir=2026-04-14
+#subdir=2025-12-10
+subdir=2026-04-21
 #filename=himede_layer11_modules16-23_900V_0x200_0000.root
-filename=unpackedData.root
+filename=cosmics_full_hime_newtrb_0001.root
 # select the CSV file where the channel mapping is defined
 #channelMapping=2024-09-03_de.csv
 trigger=-1
 # select the CSV file where the channel mapping is defined
-channelMapping=2024-11-30.csv
+channelMapping=2026-04-21.csv
+#channelMapping=2025-10-03.csv
 # choose if you want to take only the first pulse in each bar
 # for your analysis. Otherwise, multiple hits can be detected 
 # in each module, but there might be more noise.

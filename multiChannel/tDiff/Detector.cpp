@@ -61,14 +61,18 @@ vector<Module> Detector::build(const char* path){
 		int tdc  		= std::stoi(entries[5]);
 		int trb			= std::stoi(entries[6]);
 
-		int tdcoff[3][4]={0,2,4,8,1,3,5,6,7,9,10,11};
+		int tdcoff[4][4]={{0,2,4,8},{1,3,5,6},{7,9,10,11},{0,1,2,3}};
 		// determine the HIME-channel number (unique for each PMT)
 		//int channelOffset = chain * 16 + tdc * 48 + wall * 1000;
-		int channelOffset = tdcoff[trb-1][tdc] * 48 + wall * 1000;
+		//int channelOffset = tdcoff[trb-1][tdc] * 48 + wall * 288;
+		int channelOffset = tdcoff[wall*3+trb-1][tdc] * 48 + wall * 576;
 		int ch_left_up = ch_l_u_raw + channelOffset;
 		int ch_right_down = ch_r_d_raw + channelOffset;
+
+		//if(wall < 1)
+		//	cout<<"\ttdcoff:"<<tdcoff[wall*3+trb-1][tdc]<<"\tchanof:"<<channelOffset<<endl;
 		// determine the HIME-module ID (unique for each scintillator)
-		int moduleID = layer * 24 + sub_module;
+		int moduleID = wall*288 + layer * 24 + sub_module;
 
 		if(isInside(moduleID, seenModuleIDs)){
 			cout << "module ID " << moduleID << " appears more than once in the channel-mapping CSV file!" << endl;
