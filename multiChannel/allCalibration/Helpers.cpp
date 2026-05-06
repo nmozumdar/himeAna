@@ -19,18 +19,28 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Constants_h
-#define Constants_h
+#include "Helpers.h"
+using std::vector;
 
-namespace Constants{
-	// total number of modules of the detector
-	const int nModules = 384;
-	// number of modules per layer
-	const int nModulesPerLayer = 24;
-	// width of the modules in mm
-	const float moduleWith = 40;
-	// depth of the modules in mm
-	const float moduleDepth = 20;
-};
 
-#endif
+
+int Helpers::getLayer(int m){
+	int nModulesPerLayer = 24;
+	int remainder = m % 24;
+	return (m - remainder) / 24;
+}
+
+
+
+bool Helpers::isHorizontal(int w, int m){
+	int l = getLayer(m);
+	if(w) return ! ( l & 1 );
+	return ( l & 1 );
+}
+
+
+
+bool Helpers::vectorContains(const vector<int>& v, int i){
+	for(int entry : v) if(entry == i) return true;
+	return false;
+}

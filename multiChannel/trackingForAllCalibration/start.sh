@@ -20,11 +20,8 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2026-04-21
-filename=cosmics_full_hime_newtrb_0001.root
-geometryFile=2026-05-04.csv
-thresholdsFile=2024-06-21.csv
-subdir_calibration=2026-04-21
+subdir=2026-04-21/
+#subdir=test/
 # ------------------------------
 
 source ../../common/common.sh
@@ -33,13 +30,18 @@ make
 
 if [ $? -eq 0 ]; then
 
-	create_directory applyPositionCalibration "$subdir"
+	# create a list of all root files in subdir and write it to tmpfile.txt~
+	write_filenames_to_tmpfile tDiff "$subdir"
+
+	# create directory for output
+	#create_directory trackingForPositionCalibration "$subdir"
 
 	# start 
-	filename=$(basename "$filename")
-	#$ROOT_CALL "applyCalibration( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", true)"
-	$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", true)"
+	#$ROOT_CALL "tracking(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\")"
+	$ROOT_CALL "tracking(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\")"
 
+	rm -f tmpfile.txt~
+	
 	wait
 	echo -e "\nstart.sh done."
 fi;

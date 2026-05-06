@@ -19,18 +19,13 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Constants_h
-#define Constants_h
+#ifndef Helpers_h
+#define Helpers_h
 
-namespace Constants{
-	// total number of modules of the detector
-	const int nModules = 384;
-	// number of modules per layer
-	const int nModulesPerLayer = 24;
-	// width of the modules in mm
-	const float moduleWith = 40;
-	// depth of the modules in mm
-	const float moduleDepth = 20;
+#include "TString.h"
+
+namespace Helpers{
+	TString getFilename(TString path);
 };
 
 #endif

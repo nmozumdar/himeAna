@@ -19,18 +19,26 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Constants_h
-#define Constants_h
+#ifndef HistogramCollection_h
+#define HistogramCollection_h
 
-namespace Constants{
-	// total number of modules of the detector
-	const int nModules = 384;
-	// number of modules per layer
-	const int nModulesPerLayer = 24;
-	// width of the modules in mm
-	const float moduleWith = 40;
-	// depth of the modules in mm
-	const float moduleDepth = 20;
+#include "TH1F.h"
+#include "TFile.h"
+#include "Module.h"
+#include <vector>
+
+class HistogramCollection{
+	public:
+	HistogramCollection();
+	void fill(std::vector<Module>& modules);
+	void write(TFile* file);
+	TH1F hVEff;
+	TH1F hOffs;
+	TH1F htSync;
+	std::vector<TH1F> hEnergyFitPar;
+        std::vector<TString> titles;
+	int nParameters;
+
 };
 
 #endif

@@ -21,10 +21,11 @@
 
 # ---------- settings ----------
 subdir=2026-04-21
-filename=cosmics_full_hime_newtrb_0001.root
-geometryFile=2026-05-04.csv
-thresholdsFile=2024-06-21.csv
-subdir_calibration=2026-04-21
+#subdir=test
+# number of counts required in each projection in order to apply a Gaussian fit
+nCountsPerProjection=40
+# number of projections required in order to perform a fit of the linear position-calibration function
+nProjections=2
 # ------------------------------
 
 source ../../common/common.sh
@@ -33,12 +34,12 @@ make
 
 if [ $? -eq 0 ]; then
 
-	create_directory applyPositionCalibration "$subdir"
-
+	# create directory for output
+	create_directory positionCalibrationFromTracking "$subdir"
+	
 	# start 
-	filename=$(basename "$filename")
-	#$ROOT_CALL "applyCalibration( \"${HIME_ANA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", true)"
-	$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", true)"
+	#$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${nCountsPerProjection},${nProjections})" 
+	$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",${nCountsPerProjection},${nProjections})" 
 
 	wait
 	echo -e "\nstart.sh done."

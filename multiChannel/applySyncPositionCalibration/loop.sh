@@ -21,15 +21,15 @@
 
 # ---------- settings ----------
 # select the data you want to calibrate
-subdir=2025-10-27b
+subdir=2026-04-21
 #subdir=2024-06-25_cosmics
-geometryFile=2026-03-05.csv
+geometryFile=2026-05-04.csv
 # The thresholds will NOT apply a cut on the data that are written to the output TTree object!
 # Only the data shown in the histograms are affected.
 # Leave empty (also remove spaces or tab symbols behind "=") to apply no thresholds.
-thresholdsFile=2024-06-211.csv
+thresholdsFile=2024-06-21.csv
 # here you define the (previously determined) position calibration that you want to apply
-subdir_calibration=2025-10-27b
+subdir_calibration=2026-04-21
 # ------------------------------
 
 source ../../common/common.sh

@@ -1,0 +1,264 @@
+/*
+	HIMEana: Analyze HIME data.
+	
+	Copyright (C) 2023, 2024 Marco Knösel (mknoesel@ikp.tu-darmstadt.de)
+
+	This file is part of HIMEana.
+	
+	HIMEana is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	HIMEana is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#include "Fit.h"
+#include "Constants.h"
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::vector;
+
+
+
+Fit::Fit(int minCountsPerProjection, int minProjections){
+	this -> minCountsPerProjection = minCountsPerProjection;
+	this -> minProjections = minProjections;
+}
+
+
+
+void Fit::perform(vector<Module>& modules){
+
+	for(int id = 0; id < Constants::nModules; id++){
+		Module& m = modules[id];
+
+		//TSync
+		calcTSyncs(m);
+
+		//Energy Calibration	
+		if(m.hEDepVsTot.GetEntries()) 
+		{
+			if(!findStartAndStopBinsE(m)){
+				cout << "[Fit] Warning: No Energy calibration for Module " << id << " due to lack of statistics" << endl;
+				continue;
+			}
+			fitGaussiansE(m);
+			m.createCalibrationFunctionE();
+			fitCalibrationFunctionsE(m);
+			m.EcalibrationSuccessful = true;
+		}
+		
+		//Position tDiff
+		if(!m.hPosVsTDiff.GetEntries()) continue;
+		if(!findStartAndStopBins(m)){
+			cout << "[Fit] Warning: No position calibration for Module " << id << " due to lack of statistics" << endl;
+			continue;
+		}
+		fitGaussians(m);
+		fitCalibrationFunctions(m);
+		m.calibrationSuccessful = true;
+	}
+}
+
+
+
+bool Fit::findStartAndStopBins(Module& m){
+
+	startBin = -1;	// first bin for which the projection has more than "minCountsPerProjection" entries
+	stopBin = -1;	// last bin for which the projection has more than "minCountsPerProjection" entries
+	int nProjectionsWithEnoughCounts = 0;	// number of projections with at least "minCountsPerProjection" entries
+
+	for(int binY = 1; binY <= m.hPosVsTDiff.GetYaxis()->GetNbins(); binY++){
+
+		TH1D *projX = m.hPosVsTDiff.ProjectionX("", binY, binY);
+
+		
+		if(projX->GetEntries() > minCountsPerProjection){
+			if(startBin == -1) startBin = binY;
+			if(binY > startBin) stopBin = binY;
+			nProjectionsWithEnoughCounts++;
+		}
+
+		projX->Delete();
+	}
+
+	// if the above criteria are not fulfilled, don't perform the calibration
+	if(startBin == -1 || stopBin == -1 || nProjectionsWithEnoughCounts < minProjections){
+		startBin = -1;
+		stopBin = -1;
+		nBins = 0;
+		return false;
+	}
+
+	nBins = stopBin - startBin + 1;
+
+	return true;
+}
+
+bool Fit::findStartAndStopBinsE(Module& m){
+
+        startBinE = -1;  // first bin for which the projection is not empty
+        stopBinE = -1;   // largest bin for which the projection has more than 100 entries
+
+        for(int binY = 1; binY <= m.hEDepVsTot.GetYaxis()->GetNbins(); binY++){
+
+                TH1D *projX = m.hEDepVsTot.ProjectionX("", binY, binY);
+
+                if(projX->GetEntries() > 0. && startBinE == -1){
+                        startBinE = binY;
+                }
+                if(projX->GetEntries() > 50){
+                        stopBinE = binY;
+                }
+        }
+
+        // if no bins fulfilled the above criteria, simply fit all projections, which will most likely not work properly in the end
+        if(startBinE == -1) startBinE = 1;
+        if(stopBinE == -1) stopBinE = m.hEDepVsTot.GetYaxis()->GetNbins();
+
+        nBinsE = stopBinE - startBinE + 1;
+
+	return true;
+}
+
+
+
+void Fit::fitGaussians(Module& m){
+
+
+	// loop over all projections onto the tDiff axis and fit Gaussians to them
+	for(int i = 0; i < nBins; i++){
+
+		int bin = startBin + i;
+
+		TH1D* projection = m.hPosVsTDiff.ProjectionX("", bin, bin);
+
+		if(projection->GetEntries() < minCountsPerProjection) continue;
+		
+		TF1* fit = new TF1("fit", "[0] * exp( - (x - [1]) * (x - [1]) / [2] / [2])", -100., 100.);
+		fit->SetParameter(0, projection->GetMaximum());
+		fit->SetParameter(1, projection->GetBinCenter(projection->GetMaximumBin()));
+		fit->SetParameter(2, projection->GetStdDev());
+		projection->Fit(fit, "rq0");
+
+		double position = m.hPosVsTDiff.GetYaxis()->GetBinCenter(bin);
+		double tDiff = fit->GetParameter(1);
+		double tDiffUnc = fit->GetParameter(2);
+		int nPoints = m.maxGraph.GetN();
+
+		m.maxGraph.SetPoint(nPoints, tDiff, position);
+		m.maxGraph.SetPointError(nPoints, tDiffUnc, 0.);
+
+		projection->Delete();
+		fit->Delete();
+	}
+}
+
+
+void Fit::fitGaussiansE(Module& m){
+
+
+	// loop over all projections onto the tDiff axis and fit Gaussians to them
+	for(int i = 0; i < nBinsE; i++){
+
+		int bin = startBinE + i;
+
+		TH1D* projection = m.hEDepVsTot.ProjectionX("", bin, bin);
+
+		if(projection->GetEntries() < 200) continue;
+		
+		TF1* fit = new TF1("fit", "[0] * exp( - (x - [1]) * (x - [1]) / [2] / [2])", -100., 100.);
+		fit->SetParameter(0, projection->GetMaximum());
+		fit->SetParameter(1, projection->GetBinCenter(projection->GetMaximumBin()));
+		fit->SetParameter(2, projection->GetStdDev());
+		projection->Fit(fit, "rq0");
+
+		double Energy = m.hEDepVsTot.GetYaxis()->GetBinCenter(bin);
+		double tot2E = fit->GetParameter(1);
+		double tot2EUnc = fit->GetParameter(2);
+		int nPoints = m.maxGraphE.GetN();
+
+		m.maxGraphE.SetPoint(nPoints, tot2E, Energy);
+		m.maxGraphE.SetPointError(nPoints, tot2EUnc, 0.);
+
+		projection->Delete();
+		fit->Delete();
+	}
+}
+
+void Fit::calcTSyncs(Module& m){
+	m.tSyncNextBar = {std::numeric_limits<double>::quiet_NaN(),
+		std::numeric_limits<double>::quiet_NaN()};
+	for(auto& t : m.tSyncNextPlane)
+		t = {std::numeric_limits<double>::quiet_NaN(),
+			std::numeric_limits<double>::quiet_NaN()};
+	if(m.hDtNextBar.GetEntries()) 
+	{
+		if(m.hDtNextBar.GetEntries() > 40)
+		{
+			TF1* fit = new TF1("fit", "[0] * exp( - (x - [1]) * (x - [1]) / [2] / [2])", -20., 20.);
+			fit->SetParameter(0, m.hDtNextBar.GetMaximum());
+			fit->SetParameter(1, m.hDtNextBar.GetBinCenter(m.hDtNextBar.GetMaximumBin()));
+			fit->SetParameter(2, m.hDtNextBar.GetStdDev());
+			m.hDtNextBar.Fit(fit, "rq0");
+			m.tSyncNextBar = {fit->GetParameter(1),fit->GetParameter(2)};
+		}
+	}
+	if(m.hDtNextPlane.GetEntries()) 
+	{
+		for(int i = 0; i < Constants::nModulesPerLayer; i++)
+		{
+			TH1D* projection = m.hDtNextPlane.ProjectionY("", i+1, i+1);
+			if(projection->GetEntries() > 40)
+			{
+				TF1* fit = new TF1("fit", "[0] * exp( - (x - [1]) * (x - [1]) / [2] / [2])", -20., 20.);
+				fit->SetParameter(0, projection->GetMaximum());
+				fit->SetParameter(1, projection->GetBinCenter(projection->GetMaximumBin()));
+				fit->SetParameter(2, projection->GetStdDev());
+				projection->Fit(fit, "rq0");
+				m.tSyncNextPlane[i] = {fit->GetParameter(1),fit->GetParameter(2)};
+			}
+		}
+	}
+}
+
+void Fit::fitCalibrationFunctions(Module& m){
+	m.posCalFunc->SetParameter(0, -150.);	// effective velocity of light in the scintillator -> set to 50 % of the speed of light in vacuum
+	m.posCalFunc->SetParameter(1, 0.);		// position offset 
+
+
+	// set range:
+	// take the range of the data points in the TGraphErrors of each module
+	// and extend it by 2 ns
+	double smallDt, largeDt, tmp;
+	m.maxGraph.GetPoint(0, smallDt, tmp);
+	m.maxGraph.GetPoint(m.maxGraph.GetN()-1, largeDt, tmp);
+//	m.posCalFunc->SetRange(smallDt - 3., largeDt + 3.);
+
+	m.maxGraph.Fit(m.posCalFunc, "rq0");
+	if(fabs(m.getEffectiveVelocity()) > 200)
+	{
+		cout << "[Fit] Warning: Bad tDiff fit for Module " << m.id << ". Ask Miki why its not working. Big problem let him know. Refitting." << endl;
+		m.hPosVsTDiff.Fit(m.posCalFunc,"rq0");
+	}
+}
+void Fit::fitCalibrationFunctionsE(Module& m){
+
+	m.calibrationFunction->SetParameter(0,-30);
+	m.calibrationFunction->SetParameter(1,2);
+
+	m.maxGraphE.Fit(m.calibrationFunction, "rq0");
+	if(fabs(m.calibrationFunction->GetParameter(0)) > 60)
+	{
+		cout << "[Fit] Warning: Bad Energy fit for Module " << m.id << ". Ask Miki why its not working. Big problem let him know. Refitting." << endl;
+		m.hEDepVsTot.Fit(m.calibrationFunction,"rq0");
+	}
+}

@@ -19,18 +19,31 @@
 	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef Constants_h
-#define Constants_h
+#ifndef Module_h
+#define Module_h
 
-namespace Constants{
-	// total number of modules of the detector
-	const int nModules = 384;
-	// number of modules per layer
-	const int nModulesPerLayer = 24;
-	// width of the modules in mm
-	const float moduleWith = 40;
-	// depth of the modules in mm
-	const float moduleDepth = 20;
+#include <array>
+#include "TF1.h"
+#include "TH2F.h"
+#include "TFile.h"
+
+class Module{
+	public:
+	Module(){}
+	Module(int id, int layer, bool horizontal, float x, float y, float z);
+	void write(TFile *file);
+	// TGraph* for (dt,pos) data pairs, where pos is either x or y, depending of the orientation of the module.
+	// This will be used to determine the position calibration function.
+	TH2F* hPosVsTDiff;
+	TH2F *hEDepVsTot;
+	TH1F* avgToT;
+	TH1F* hDtNextBar;
+	TH2F* hDtNextPlane;
+	float x;
+	float y;
+	float z;
+	int layer;
+	int id;
 };
 
 #endif
