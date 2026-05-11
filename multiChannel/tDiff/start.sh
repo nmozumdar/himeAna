@@ -21,9 +21,9 @@
 
 # ---------- settings ----------
 #subdir=2025-12-10
-subdir=2026-04-21
+subdir=2026-04-22
 #filename=himede_layer11_modules16-23_900V_0x200_0000.root
-filename=cosmics_full_hime_newtrb_0001.root
+filename=samurai_2_1T_Y_source26112094105.root
 # select the CSV file where the channel mapping is defined
 #channelMapping=2024-09-03_de.csv
 trigger=-1

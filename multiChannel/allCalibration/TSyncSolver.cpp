@@ -23,8 +23,8 @@ void TSyncSolver::solve(std::vector<Module>& modules)
 		for(int id = startBar; id < nBars; id++) {
 			Module& m = modules[id];
 			int layer = id / Constants::nModulesPerLayer;
-			if(id == 288)
-				continue;
+			//if(id == 288)
+			//	continue;
 
 			// NextBar equations - check not last bar in layer
 			if(!std::isnan(m.tSyncNextBar.Value) &&
@@ -120,8 +120,8 @@ void TSyncSolver::solve(std::vector<Module>& modules)
 			for(int id = 0; id < nBars; id++) {
 				Module& m = modules[id + startBar];
 				int layer = id / Constants::nModulesPerLayer;
-				if(id == 288)
-					continue;
+			//	if(id == 288)
+			//		continue;
 
 				// NextBar equations - check not last bar in layer
 				if(!std::isnan(m.tSyncNextBar.Value) &&
