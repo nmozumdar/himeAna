@@ -35,7 +35,7 @@ make
 if [ $? -eq 0 ]; then
 
 	# create directory for output
-	create_directory positionCalibrationFromTracking "$subdir"
+	create_directory CalibrationFromTracking "$subdir"
 	
 	# start 
 	#$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${nCountsPerProjection},${nProjections})" 

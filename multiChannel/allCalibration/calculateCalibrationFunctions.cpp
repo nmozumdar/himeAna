@@ -46,7 +46,7 @@ using std::endl;
 void calculateCalibrationFunctions(TString trb3dir, TString subdir, int nCountsPerProjection, int nProjections){
 
 	// ---------------- Input ----------------
-	TString path(trb3dir + "/data/trackingForPositionCalibration/" + subdir + ".root");
+	TString path(trb3dir + "/data/trackingForAllCalibration/" + subdir + ".root");
 	vector<Module> modules;
 
 	cout << "[calculateCalibrationFunctions] Reading file " << path.Data() << endl;
@@ -65,9 +65,11 @@ void calculateCalibrationFunctions(TString trb3dir, TString subdir, int nCountsP
 	hc.fill(modules);
 
 	// ---------------- Write ----------------
-	TFile* fileOut = new TFile(trb3dir + "/data/positionCalibrationFromTracking/" + subdir + "/calibration.root", "recreate");
+	TFile* fileOut = new TFile(trb3dir + "/data/CalibrationFromTracking/" + subdir + "/calibration.root", "recreate");
 	hc.write(fileOut);
 	for(const Module& m: modules) m.write(fileOut);
+
+	cout << "[calculateCalibrationFunctions] Calibration File witten to " << trb3dir + "/data/CalibrationFromTracking/" + subdir + "/calibration.root" << endl;
 
 	// ---------------- Draw ----------------
 	//Drawer dr;

@@ -32,16 +32,16 @@ class CalibrationFunctions{
 	public:
 	CalibrationFunctions(){}
 	CalibrationFunctions(TString path);
-	float getCalibratedValue_p(int moduleID, float tDiff);
+	float getPosCalibratedValue(int moduleID, float tDiff);
 	float getTDiffCorr(int moduleID, float tDiff);
 	float getTMeanCorr(int moduleID, float tSum);
-	float getCalibratedValue_e(int moduleID, float avgToT);
+	float getECalibratedValue(int moduleID, float avgToT);
 
 	private:
 	TFile *file;
-	std::map<int, TF1*> posCalFuncs;  // Map: moduleID -> calibration function
-	std::map<int, double> tSync;      // Map: moduleID -> tSync value
-	std::map<int, TF1*> ECalFuncs;  // Map: moduleID -> calibration function
+	std::vector<TF1*> posCalFuncs;  // Map: moduleID -> calibration function
+	std::vector<double> tSync;      // Map: moduleID -> tSync value
+	std::vector<TF1*> ECalFuncs;  // Map: moduleID -> calibration function
 };
 
 #endif

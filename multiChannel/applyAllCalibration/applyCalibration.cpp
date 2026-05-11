@@ -43,9 +43,9 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 	TDiffData input(TString(trb3dir ) + "/data/tDiff/" + TString(dir), filename);
 	int nEvents = input.getNEvents();
 
-	CalData output("output_" + TString(filename), input);
+	CalData output(TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/" + TString(filename), input);
 
-	CalibrationFunctions CalFuncs(TString(trb3dir) + "/data/positionCalibrationFromTracking/" + TString(subdir_posCalibration) + "/calibration.root");
+	CalibrationFunctions CalFuncs(TString(trb3dir) + "/data/CalibrationFromTracking/" + TString(subdir_posCalibration) + "/calibration.root");
 
 	vector<vector<string>> csvData = CSVReader::read(TString(trb3dir) + "/data/geometry/" + TString(geometryFile), 5);
 	vector<Module> modules(Constants::nModules);
@@ -66,7 +66,7 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 
 	HistogramCollection hc(Helpers::countLayers(modules));
 	TRandom2 randgen;
-	ProgressIndicator pi(nEvents, "[calibration] Ask Nikhil what are the thresholds in MeVee. Processed events:");
+	ProgressIndicator pi(nEvents, "[calibration] Writing calibrated data. Processed events:");
 
 	for(int eventCounter = 0; eventCounter < nEvents; eventCounter++){
 		
@@ -87,7 +87,7 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 			int moduleID = input.getModuleID(hit);
 			const Module &m = modules[moduleID];
 
-			float calibratedPos = CalFuncs.getCalibratedValue_p(moduleID, input.getTDiff(hit));
+			float calibratedPos = CalFuncs.getPosCalibratedValue(moduleID, input.getTDiff(hit));
 			float randomOffset = Constants::moduleWith * (randgen.Uniform() - 0.5);
 			
 			if(m.isHorizontal){
@@ -103,8 +103,7 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 			output.tmean[hit] = CalFuncs.getTMeanCorr(moduleID, input.getTSum(hit));
 
 			float avgToT = input.getCombinedTot(hit);
-			float calibratedEnergy = CalFuncs.getCalibratedValue_e(moduleID, avgToT);
-			output.energy[hit] = calibratedEnergy;
+			output.energy[hit] = CalFuncs.getECalibratedValue(moduleID, avgToT);
 		}
 		
 		hc.fill(input, output, thrs);
@@ -114,6 +113,8 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 
 	output.write();
 	hc.write();
+
+	cout << "[applyCalibration] Calibration Finished. File written to " << TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/" + TString(filename) << endl;
 
 	if(!plot) return;
 //	Drawer dr;

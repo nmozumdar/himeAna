@@ -49,7 +49,7 @@ Module::Module(int id, int layer, bool horizontal, float x, float y, float z){
 	avgToT = new TH1F(TString("AvgToT_module_") + Convert::toNdigit(id, 3), "", 200, 0, 50);
 	avgToT->GetXaxis()->SetTitle("ToT (arb Units)");
 
-	hEDepVsTot = new TH2F("hEDepVsTot_" + Convert::toNdigit(id, 3), title, 90, 0, 30, 80, 0, 40);
+	hEDepVsTot = new TH2F("hEDepVsTot_" + Convert::toNdigit(id, 3), title, 130, 0, 50, 80, 0, 40);
         hEDepVsTot->GetXaxis()->SetTitle("ToT (ns)");
         hEDepVsTot->GetYaxis()->SetTitle("Energy deposition (MeV)");
 

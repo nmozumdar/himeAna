@@ -40,28 +40,30 @@ CalibrationFunctions::CalibrationFunctions(TString path)
 	// ===== Load position calibration parameters from histograms =====
 	TH1F *hVEff = (TH1F *)file->Get("hVEff");
 	TH1F *hOffs = (TH1F *)file->Get("hOffs");
+	posCalFuncs = vector<TF1*>(Constants::nModules);
 
 	// ===== Load Sync calibration parameters from histograms =====
 
-	TH1F *htSync = (TH1F *)file->Get("htSync");
+	TH1F *htSync = (TH1F *)file->Get("hTSync");
+	tSync = vector<double>(Constants::nModules);
 
 	// ===== Load energy calibration parameters from histograms =====
 
 	TH1F *hPar0 = (TH1F *)file->Get("hEnergyFitPar0");
 	TH1F *hPar1 = (TH1F *)file->Get("hEnergyFitPar1");
+	ECalFuncs = vector<TF1*>(Constants::nModules);
 
 	if (hVEff && hOffs && htSync && hPar0 && hPar1)
 	{
 		for (int m = 0; m < Constants::nModules; m++)
 		{
-			// Position calibration
+			// Position/tDiff calibration
 			double vEff = 0.5 * hVEff->GetBinContent(m + 1);
 			double offs = hOffs->GetBinContent(m + 1);
-			TString posFuncName = TString("posCalFunc_") + to_string(m).data();
-			TF1 *posFunc = new TF1(posFuncName, "[0] * x + [1]", -500., 500.);
-			posFunc->SetParameter(0, vEff);
-			posFunc->SetParameter(1, offs);
-			posCalFuncs[m] = posFunc;
+			TString posFuncName(TString("module_") + to_string(m).data() + TString("_posCalFunc"));
+			posCalFuncs[m] = new TF1(posFuncName, "[0] * x + [1]", -500., 500.);
+			posCalFuncs[m]->SetParameter(0, vEff);
+			posCalFuncs[m]->SetParameter(1, offs);
 
 			// Sync calibration
 			tSync[m] = htSync->GetBinContent(m + 1);
@@ -71,64 +73,41 @@ CalibrationFunctions::CalibrationFunctions(TString path)
 			double par1 = hPar1->GetBinContent(m + 1);
 			if (par0 != 0. || par1 != 0.)
 			{
-				TString energyFuncName = TString("calibrationFunction") + to_string(m).data();
-				TF1 *energyFunc = new TF1(energyFuncName, "[0] + [1] * x", 0, 1000);
-				energyFunc->SetParameter(0, par0);
-				energyFunc->SetParameter(1, par1);
-				ECalFuncs[m] = energyFunc;
+				TString energyFuncName(TString("module_") + to_string(m).data() + TString("_ECalFunc"));
+				ECalFuncs[m] = new TF1(energyFuncName, "[0] + [1] * x", 0, 1000);
+				ECalFuncs[m]->SetParameter(0, par0);
+				ECalFuncs[m]->SetParameter(1, par1);
 			}
+			else
+				cout << "[CalibrationFunctions] Warning: Missing Energy calibrationparameters for Module: " << m + 1 << endl;
 		}
 	}
 	else
-	{
 		cout << "[CalibrationFunctions] Warning: Missing histograms for calibration parameters" << endl;
-	}
 
-	cout << "[CalibrationFunctions] Loaded " << posCalFuncs.size() << " position calibration functions" << endl;
-	cout << "[CalibrationFunctions] Loaded " << tSync.size() << " sync calibration parameters" << endl;
-	cout << "[CalibrationFunctions] Loaded " << ECalFuncs.size() << " energy calibration functions from histograms" << endl;
 }
 
-float CalibrationFunctions::getCalibratedValue_p(int moduleID, float tDiff)
+float CalibrationFunctions::getPosCalibratedValue(int moduleID, float tDiff)
 {
-	auto it = posCalFuncs.find(moduleID);
-	if (it == posCalFuncs.end())
-		return -10000.;
-	if (!it->second)
-		return -10000.;
-	if (it->second->GetParameter(0) == 0.)
-		return -10000.;
-	return it->second->Eval(tDiff);
+	if(posCalFuncs[moduleID]->GetParameter(0) == 0.) return -10000.;
+	return posCalFuncs[moduleID]->Eval(tDiff);
 }
 
 float CalibrationFunctions::getTDiffCorr(int moduleID, float tDiff)
 {
-	auto it = posCalFuncs.find(moduleID);
-	if (it == posCalFuncs.end())
-		return -10000.;
-	if (!it->second)
-		return -10000.;
-	if (it->second->GetParameter(0) == 0.)
-		return -10000.;
-	return tDiff + it->second->GetParameter(1) / it->second->GetParameter(0);
+	if(posCalFuncs[moduleID]->GetParameter(0) == 0.) return -10000.;
+	return tDiff + posCalFuncs[moduleID]->GetParameter(1)/posCalFuncs[moduleID]->GetParameter(0);
 }
 
 float CalibrationFunctions::getTMeanCorr(int moduleID, float tSum)
 {
-	auto it = tSync.find(moduleID);
-	if (it == tSync.end())
-		return -10000;
-	if (TMath::IsNaN(it->second))
-		return -10000;
-	return tSum / 2. - it->second;
+	if(TMath::IsNaN(tSync[moduleID])) return -10000;
+	return tSum/2. - tSync[moduleID];
+
 }
 
-float CalibrationFunctions::getCalibratedValue_e(int moduleID, float avgToT)
+float CalibrationFunctions::getECalibratedValue(int moduleID, float avgToT)
 {
-	auto it = ECalFuncs.find(moduleID);
-	if (it == ECalFuncs.end())
-		return -10000.;
-	if (!it->second)
-		return -10000.;
-	return it->second->Eval(avgToT);
+	if(!ECalFuncs[moduleID]) return -10000.;
+        return ECalFuncs[moduleID]->Eval(avgToT);
 }

@@ -112,7 +112,7 @@ void tracking(TString trb3dir, TString subdir){
 	hime.addNEntriesToHistTitle();
 
 	// fill histograms and write them to a file
-	TString pathOut(trb3dir + "/data/trackingForPositionCalibration/" + subdir_without_slash + ".root");
+	TString pathOut(trb3dir + "/data/trackingForAllCalibration/" + subdir_without_slash + ".root");
 	cout << "[tracking] Writing file " << pathOut << endl;
 	TFile* fileOut = new TFile(pathOut, "recreate");
 

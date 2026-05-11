@@ -20,7 +20,7 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2026-05-06/
+subdir=2026-04-21/
 #subdir=test/
 # ------------------------------
 

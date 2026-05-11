@@ -103,7 +103,7 @@ void TSyncSolver::solve(std::vector<Module>& modules)
 			for(int i = startBar; i < nBars; i++) {
 				result[i] = solution(i);
 				modules[i].tSync = {solution(i), 0.}; // error not available from SVD directly
-				cout<<modules[i].tSync.Value<<endl;
+				//cout<<modules[i].tSync.Value<<endl;
 			}
 		}
 		//now do Hime
@@ -200,7 +200,7 @@ void TSyncSolver::solve(std::vector<Module>& modules)
 				for(int i = startBar; i < nBars + startBar; i++) {
 					result[i - startBar] = solution(i - startBar);
 					modules[i].tSync = {solution(i - startBar), 0.}; // error not available from SVD directly
-					cout<<modules[i].tSync.Value<<endl;
+					//cout<<modules[i].tSync.Value<<endl;
 				}
 
 			}

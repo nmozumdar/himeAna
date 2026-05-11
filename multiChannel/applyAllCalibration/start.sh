@@ -32,7 +32,7 @@ make
 
 if [ $? -eq 0 ]; then
 
-	create_directory applyAllCalibration "$subdir"
+	create_directory calibratedFiles "$subdir"
 
 	# start 
 	filename=$(basename "$filename")

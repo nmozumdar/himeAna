@@ -33,7 +33,7 @@ HistogramCollection::HistogramCollection(){
 	hVEff = TH1F("hVEff", "Effective velocity of light", Constants::nModules, 0, Constants::nModules);
 	hOffs = TH1F("hOffs", "Position offset", Constants::nModules, 0, Constants::nModules);
 
-	htSync = TH1F("htSync", "tSync Values", Constants::nModules, 0, Constants::nModules);
+	htSync = TH1F("hTSync", "tSync Values", Constants::nModules, 0, Constants::nModules);
 
 	hVEff.GetXaxis()->SetTitle("Module ID");
 	hOffs.GetXaxis()->SetTitle("Module ID");

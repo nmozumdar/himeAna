@@ -152,6 +152,8 @@ void Fit::fitGaussians(Module& m){
 		double position = m.hPosVsTDiff.GetYaxis()->GetBinCenter(bin);
 		double tDiff = fit->GetParameter(1);
 		double tDiffUnc = fit->GetParameter(2);
+		if(tDiffUnc > 5.)
+			continue;
 		int nPoints = m.maxGraph.GetN();
 
 		m.maxGraph.SetPoint(nPoints, tDiff, position);
@@ -173,13 +175,13 @@ void Fit::fitGaussiansE(Module& m){
 
 		TH1D* projection = m.hEDepVsTot.ProjectionX("", bin, bin);
 
-		if(projection->GetEntries() < 200) continue;
+		if(projection->GetEntries() < 500) continue;
 		
-		TF1* fit = new TF1("fit", "[0] * exp( - (x - [1]) * (x - [1]) / [2] / [2])", -100., 100.);
+		TF1* fit = new TF1("fit", "[0] * exp( - (x - [1]) * (x - [1]) / [2] / [2])", 0., 100.);
 		fit->SetParameter(0, projection->GetMaximum());
 		fit->SetParameter(1, projection->GetBinCenter(projection->GetMaximumBin()));
 		fit->SetParameter(2, projection->GetStdDev());
-		projection->Fit(fit, "rq0");
+		projection->Fit(fit, "rq0", "", projection->GetBinCenter(projection->GetMaximumBin())-3, projection->GetBinCenter(projection->GetMaximumBin())+3);
 
 		double Energy = m.hEDepVsTot.GetYaxis()->GetBinCenter(bin);
 		double tot2E = fit->GetParameter(1);
@@ -246,19 +248,21 @@ void Fit::fitCalibrationFunctions(Module& m){
 	m.maxGraph.Fit(m.posCalFunc, "rq0");
 	if(fabs(m.getEffectiveVelocity()) > 200)
 	{
-		cout << "[Fit] Warning: Bad tDiff fit for Module " << m.id << ". Ask Miki why its not working. Big problem let him know. Refitting." << endl;
+		cout << "[Fit] Warning: Bad tDiff fit for Module " << m.id << endl;
 		m.hPosVsTDiff.Fit(m.posCalFunc,"rq0");
 	}
 }
 void Fit::fitCalibrationFunctionsE(Module& m){
 
 	m.calibrationFunction->SetParameter(0,-30);
-	m.calibrationFunction->SetParameter(1,2);
+	m.calibrationFunction->SetParameter(1,1.5);
 
 	m.maxGraphE.Fit(m.calibrationFunction, "rq0");
 	if(fabs(m.calibrationFunction->GetParameter(0)) > 60)
 	{
-		cout << "[Fit] Warning: Bad Energy fit for Module " << m.id << ". Ask Miki why its not working. Big problem let him know. Refitting." << endl;
+		cout << "[Fit] Warning: Bad Energy fit for Module " << m.id << endl;
+		m.calibrationFunction->SetParameter(0,-30);
+		m.calibrationFunction->SetParameter(1,1.5);
 		m.hEDepVsTot.Fit(m.calibrationFunction,"rq0");
 	}
 }
