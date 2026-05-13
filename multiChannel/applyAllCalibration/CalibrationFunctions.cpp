@@ -93,19 +93,19 @@ float CalibrationFunctions::getPosCalibratedValue(int moduleID, float tDiff)
 	return posCalFuncs[moduleID]->Eval(tDiff);
 }
 
-float CalibrationFunctions::getTDiffCorr(int moduleID, float tDiff)
-{
-	if(posCalFuncs[moduleID]->GetParameter(0) == 0.) return -10000.;
-	return tDiff + posCalFuncs[moduleID]->GetParameter(1)/posCalFuncs[moduleID]->GetParameter(0);
-}
-
-float CalibrationFunctions::getTMeanCorr(int moduleID, float tSum)
+float CalibrationFunctions::getTofCorr(int moduleID, float tofRaw)
 {
 	if(TMath::IsNaN(tSync[moduleID])) return -10000;
-	return tSum/2. - tSync[moduleID];
+	return tofRaw - tSync[moduleID];
 
 }
+float CalibrationFunctions::getPmtTCorr(int moduleID, float pmtT, int side)
+{
+	if(TMath::IsNaN(tSync[moduleID]) || posCalFuncs[moduleID]->GetParameter(0) == 0.) return -10000;
+	double offset = tSync[moduleID] + (0.5 - side)*posCalFuncs[moduleID]->GetParameter(1)/posCalFuncs[moduleID]->GetParameter(0);
+	return pmtT - offset;
 
+}
 float CalibrationFunctions::getECalibratedValue(int moduleID, float avgToT)
 {
 	if(!ECalFuncs[moduleID]) return -10000.;

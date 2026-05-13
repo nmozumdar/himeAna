@@ -22,6 +22,7 @@
 #include "HistogramCollection.h"
 #include "Helpers.h"
 #include "Convert.h"
+#include "TVector3.h"
 
 using std::vector;
 
@@ -30,7 +31,7 @@ using std::vector;
 HistogramCollection::HistogramCollection(int nLayers){
 
 	const float maxXY = 850.;
-	const float maxZ = 200.;
+	const float maxZ = 1000.;
 
 	hPos = TH2F("hPos", "Positions of hits in HIME", 200, -maxXY, maxXY, 200, -maxXY, maxXY);
 	hPos.GetXaxis()->SetTitle("x (mm)");
@@ -51,26 +52,73 @@ HistogramCollection::HistogramCollection(int nLayers){
 		hPosLayer[layer].GetXaxis()->SetTitle("x (mm)");
 		hPosLayer[layer].GetYaxis()->SetTitle("y (mm)");
 	}
+
+	htof = TH1F("htof", "Hime Time of flight", 200, -1, -1);// for now
+	htofCorr = TH1F("htofCorr", "Hime ToF Z corrected", 200, -1, -1);// for now
+	
+	htofvModule = TH2F("htofvModule", "Time of Flight vs ModuleID", 400, -10.5, 389.5, 200, -1, -1);
+	htofCorrvModule = TH2F("htofCorrvModule", "Tof Z corr vs ModuleID", 400, -10.5, 389.5, 200, -1, -1);
+
+	htDiffvModule = TH2F("htDiffvModule", "TDiff vs ModuleID", 400, -10.5, 389.5, 600, -30, 30);
+
+	hEvModule = TH2F("hEvModule", "Energy vs ModuleID", 400, -10.5, 389.5, 1000, -10, 100);
+
+
+	htSync84 = TH2F("htSync84", "Time Module - Time Module 84", 400, -10.5, 389.5, 600, -30, 30);
+	htSync60 = TH2F("htSync60", "Time Module - Time Module 60", 400, -10.5, 389.5, 600, -30, 30);
+
 }
 
 
 
-void HistogramCollection::fill(const TDiffData& input, const CalData& output, const Thresholds& thrs){
+void HistogramCollection::fill(const TDiffData& input, const CalData& output){
 	
 	for(int iHit = 0; iHit < output.x.size(); iHit++){
 		
-		if(input.getCombinedTot(iHit) < thrs[input.getModuleID(iHit)]) continue;
+		hEvModule.Fill(input.getModuleID(iHit), output.energy[iHit]);
+
+		if(output.energy[iHit] < 4.) continue;
 		
 		hPos.Fill(output.x[iHit], output.y[iHit]);
 		hZ.Fill(output.z[iHit]);
 
 		int layer = Helpers::getLayer(input.getModuleID(iHit));
 		hPosLayer[layer].Fill(output.x[iHit], output.y[iHit]);
+
+		htof.Fill(output.tof[iHit]);
+		//TODO:change the global to tvector3 better
+		TVector3 pos;
+		pos.SetXYZ(output.x[iHit], output.y[iHit], output.z[iHit]);
+		htofCorr.Fill(output.tof[iHit] - pos.Mag() / 299.792458);
+		
+		htofvModule.Fill(input.getModuleID(iHit), output.tof[iHit]);
+		htofCorrvModule.Fill(input.getModuleID(iHit), output.tof[iHit] - pos.Mag() / 299.792458);
+
+
+		htDiffvModule.Fill(input.getModuleID(iHit), output.tdiff[iHit]);
+
+		for(int iHit2 = 0; iHit2 < output.x.size(); iHit2++){
+
+			if(input.getModuleID(iHit2) == 84)
+				htSync84.Fill(input.getModuleID(iHit), output.tdiff[iHit] - output.tdiff[iHit2]);
+
+			if(input.getModuleID(iHit2) == 60)
+				htSync60.Fill(input.getModuleID(iHit), output.tdiff[iHit] - output.tdiff[iHit2]);
+		}
 	}
 }
 
-void HistogramCollection::write() const {
+void HistogramCollection::write(TFile* file) const {
+	file->cd();
 	hPos.Write();
 	hZ.Write();
+	htof.Write();
+	htofCorr.Write();
+	htofvModule.Write();
+	htofCorrvModule.Write();
+	htDiffvModule.Write();
+	htSync84.Write();
+	htSync60.Write();
+	hEvModule.Write();
 	for(const TH2F& h : hPosLayer) h.Write();
 }

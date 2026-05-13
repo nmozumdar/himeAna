@@ -30,13 +30,17 @@ class CalData{
 	CalData(TString path, TDiffData &input);
 	void fill();
 	void write();
+
 	
 	// Position calibration data
 	std::vector<float> x;			// Position coordinate x
 	std::vector<float> y;			// Position coordinate y
 	std::vector<float> z;			// Position coordinate z
 	std::vector<float> tdiff;		// Tdiff corrected time difference between two pmts of a bar
-	std::vector<float> tmean;		// Mean Calibrated time of Bar
+	std::vector<float> time;		// Mean Calibrated time of Bar
+	std::vector<float> tof;			// TSynced tof
+	std::vector<float> t0;			// time of pmt right_down
+	std::vector<float> t1;			// time of pmt left_up
 	
 	// Energy calibration data
 	std::vector<float> energy;		// Energy in MeVee

@@ -40,14 +40,14 @@ CalData::CalData(TString path, TDiffData &input){
 	tree->Branch("y", &y);                                              // Position coordinate y
 	tree->Branch("z", &z);                                              // Position coordinate z
 	tree->Branch("tDiff", &tdiff);                                      // Corrected Time difference between the rising signals of PMT 0 and 1
-	tree->Branch("tMean", &tmean);                                      // Corrected mean Time of bar
-	
+	tree->Branch("time", &time);                                      // Corrected mean Time of bar
+	tree->Branch("tof", &tof);                            // synced time of flight
+	tree->Branch("t0", &t0);                                // Time PMT 0
+	tree->Branch("t1", &t1);                                // Time PMT 1
 	// create branches for energy calibration
 	tree->Branch("energy", &energy);                                    // Energy in MeVee
-	
 	// create branches for other relevant data (from TDiffData)
 	tree->Branch("tSum", &(input.tSum));                                // Sum of the times of the rising signals of PMT 0 and 1
-	tree->Branch("tofRaw", &(input.tofRaw));                            // Uncalibrated time of flight
 	tree->Branch("tot0", &(input.tot0));                                // Time over threshold of PMT 0
 	tree->Branch("tot1", &(input.tot1));                                // Time over threshold of PMT 1
 	tree->Branch("moduleID", &(input.moduleID));                        // Identification number of the corresponding module
@@ -68,4 +68,5 @@ void CalData::fill(){
 void CalData::write(){
 	file->cd();
 	tree->Write();
+	file->Close();
 }

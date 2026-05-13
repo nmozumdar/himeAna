@@ -22,6 +22,6 @@
 #ifndef applyCalibration_h
 #define applyCalibration_h
 
-void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* thresholdsFile, const char* subdir_posCalibration, bool plot);
+void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* subdir_posCalibration, bool plot);
 
 #endif

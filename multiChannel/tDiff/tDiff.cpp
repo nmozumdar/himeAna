@@ -109,9 +109,9 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 		output.fastScaler = input.getFastScaler();
 
 		// determine the reference time to calculate the uncalibrated ToF
-		// TODO: Remove this. Its already reference time subtracted. Maybe add time of SBT later 
+		// TODO: Check 
 		std::array<float,2> referencePulse;
-		bool refTimeFound = PulseAna::findPulse(messagesSortedByChannel[0], referencePulse);
+		bool refTimeFound = PulseAna::findPulse(messagesSortedByChannel[576], referencePulse);
 
 		// loop over all modules of the detector
 		for(Module& m: modules){
@@ -166,7 +166,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 					float tSum = timeStamps_right_down[0] + timeStamps_left_up[0];
 					output.tSum.push_back(tSum);
 					// uncalibrated ToF
-					// TODO: Again no meaning currently but maybe subtract with SBT time when present 
+					// TODO: Fixed. to check 
 					float tof = tSum/2. - referencePulse[0];
 					output.tofRaw.push_back(tof);
 					// ToT of the PMT on the right/bottom side

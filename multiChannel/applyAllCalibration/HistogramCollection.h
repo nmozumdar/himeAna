@@ -33,10 +33,18 @@ class HistogramCollection{
 	public:
 	HistogramCollection(){};
 	HistogramCollection(int nLayers);
-	void fill(const TDiffData& input, const CalData& output, const Thresholds& thrs);
-	void write() const;
+	void fill(const TDiffData& input, const CalData& output);
+	void write(TFile* file) const;
 	TH1F hZ;
+	TH1F htof;
+	TH1F htofCorr;
 	TH2F hPos;
+	TH2F htofvModule;
+	TH2F htofCorrvModule;
+	TH2F htDiffvModule;
+	TH2F htSync84;
+	TH2F htSync60;
+	TH2F hEvModule;
 	std::vector<TH2F> hPosLayer;
 };
 

@@ -33,8 +33,8 @@ class CalibrationFunctions{
 	CalibrationFunctions(){}
 	CalibrationFunctions(TString path);
 	float getPosCalibratedValue(int moduleID, float tDiff);
-	float getTDiffCorr(int moduleID, float tDiff);
-	float getTMeanCorr(int moduleID, float tSum);
+	float getTofCorr(int moduleID, float tofRaw);
+	float getPmtTCorr(int moduleID, float pmtT, int side);
 	float getECalibratedValue(int moduleID, float avgToT);
 
 	private:

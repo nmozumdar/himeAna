@@ -38,7 +38,7 @@ using std::endl;
 
 
 
-void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* thresholdsFile, const char* subdir_posCalibration, bool plot){
+void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* subdir_posCalibration, bool plot){
 
 	TDiffData input(TString(trb3dir ) + "/data/tDiff/" + TString(dir), filename);
 	int nEvents = input.getNEvents();
@@ -55,15 +55,6 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 		modules[moduleID] = Module(moduleID, std::stof(line[1]), std::stof(line[2]), std::stof(line[3]), std::stoi(line[4]));
 	}
 
-	TString thresholdsFile_tstr(thresholdsFile);
-	Thresholds thrs;
-	if(thresholdsFile_tstr.Length()){
-		thrs = Thresholds(TString(trb3dir) + "/data/thresholds/" + TString(thresholdsFile), modules.size());
-	}
-	else{
-		thrs = Thresholds(-1, Constants::nModules);
-	}
-
 	HistogramCollection hc(Helpers::countLayers(modules));
 	TRandom2 randgen;
 	ProgressIndicator pi(nEvents, "[calibration] Writing calibrated data. Processed events:");
@@ -78,7 +69,10 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 		output.y = vector<float>(input.nHits);
 		output.z = vector<float>(input.nHits);
 		output.tdiff = vector<float>(input.nHits);
-		output.tmean = vector<float>(input.nHits);
+		output.time = vector<float>(input.nHits);
+		output.tof = vector<float>(input.nHits);
+		output.t0 = vector<float>(input.nHits);
+		output.t1 = vector<float>(input.nHits);
 		output.energy = vector<float>(input.nHits);
 		
 		// loop over all hits of the current event
@@ -99,22 +93,26 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 				output.y[hit] = -calibratedPos;
 			}
 			output.z[hit] = m.z + Constants::moduleDepth * (randgen.Uniform() - 0.5);
-			output.tdiff[hit] = CalFuncs.getTDiffCorr(moduleID, input.getTDiff(hit));
-			output.tmean[hit] = CalFuncs.getTMeanCorr(moduleID, input.getTSum(hit));
-
-			float avgToT = input.getCombinedTot(hit);
-			output.energy[hit] = CalFuncs.getECalibratedValue(moduleID, avgToT);
+			output.tof[hit] = CalFuncs.getTofCorr(moduleID, input.getTofRaw(hit));
+			output.t0[hit] = CalFuncs.getPmtTCorr(moduleID, input.getT0(hit), 0);
+			output.t1[hit] = CalFuncs.getPmtTCorr(moduleID, input.getT1(hit), 1);
+			output.tdiff[hit] = output.t1[hit] - output.t0[hit];
+			output.time[hit] = (output.t0[hit] + output.t1[hit]) / 2.;
+			output.energy[hit] = CalFuncs.getECalibratedValue(moduleID, input.getCombinedTot(hit));
 		}
 		
-		hc.fill(input, output, thrs);
+		hc.fill(input, output);
 
 		output.fill();
 	}
 
 	output.write();
-	hc.write();
+
+	TFile* histFile = new TFile(TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/hist_" + TString(filename), "recreate");
+        hc.write(histFile);
 
 	cout << "[applyCalibration] Calibration Finished. File written to " << TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/" + TString(filename) << endl;
+	cout << "[applyCalibration] Histogram file written to " << TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/hist_" + TString(filename) << endl;
 
 	if(!plot) return;
 //	Drawer dr;

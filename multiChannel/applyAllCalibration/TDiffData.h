@@ -38,6 +38,9 @@ class TDiffData{
 	inline float getTSum(int hit) const { return (*tSum)[hit]; }
 	inline float getTot0(int hit) const { return (*tot0)[hit]; }
 	inline float getTot1(int hit) const { return (*tot1)[hit]; }
+	inline float getTofRaw(int hit) const { return (*tofRaw)[hit]; }
+	inline float getT0(int hit) const { return (*t0)[hit]; }
+	inline float getT1(int hit) const { return (*t1)[hit]; }
 	inline float getCombinedTot(int hit) const { return std::sqrt((*tot0)[hit] * (*tot1)[hit]); }
 	inline int getModuleID(int hit) const { return (*moduleID)[hit]; }
 
@@ -48,6 +51,8 @@ class TDiffData{
 	std::vector<float>* tot0;               // Time over threshold of PMT 0
 	std::vector<float>* tot1;               // Time over threshold of PMT 1
 	std::vector<int>* moduleID;             // Identification number of the corresponding module
+	std::vector<float>* t0;                          // Leading edge PMT 0
+	std::vector<float>* t1;                          // Leading edge PMT 1
 	int nHits;                              // Number of hits in each event
 	uint64_t slowScaler;                    // Value of the fast scaler
 	uint64_t fastScaler;                    // Value of the slow scaler

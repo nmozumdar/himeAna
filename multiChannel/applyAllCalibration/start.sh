@@ -23,7 +23,6 @@
 subdir=2026-04-21
 filename=cosmics_full_hime_newtrb_0001.root
 geometryFile=2026-05-04.csv
-thresholdsFile=2024-06-21.csv
 subdir_posCalibration=2026-04-21
 
 source ../../common/common.sh
@@ -36,7 +35,7 @@ if [ $? -eq 0 ]; then
 
 	# start 
 	filename=$(basename "$filename")
-	$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_posCalibration}\", true)"
+	$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${subdir_posCalibration}\", true)"
 
 	wait
 	echo -e "\nstart.sh done."
