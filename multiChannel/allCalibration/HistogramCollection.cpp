@@ -58,8 +58,11 @@ HistogramCollection::HistogramCollection(){
 
 void HistogramCollection::fill(vector<Module>& modules){
 	for(int id = 0; id < Constants::nModules; id++){
-		htSync.SetBinContent(id+1, modules[id].tSync.Value);
-		htSync.SetBinError(id+1, modules[id].tSync.Error);
+		if(!std::isnan(modules[id].tSync.Value))
+		{
+			htSync.SetBinContent(id+1, modules[id].tSync.Value);
+			htSync.SetBinError(id+1, modules[id].tSync.Error);
+		}
 
 		nParameters = modules[id].nEPar;
 		

@@ -20,10 +20,10 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2026-04-21
-filename=cosmics_full_hime_newtrb_0001.root
+subdir=2026-05-17
+filename=hime_cosmics_26137032137.root
 geometryFile=2026-05-04.csv
-subdir_posCalibration=2026-04-21
+subdir_Calibration=2026-05-17
 
 source ../../common/common.sh
 
@@ -35,7 +35,7 @@ if [ $? -eq 0 ]; then
 
 	# start 
 	filename=$(basename "$filename")
-	$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${subdir_posCalibration}\", true)"
+	$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${subdir_Calibration}\", true)"
 
 	wait
 	echo -e "\nstart.sh done."

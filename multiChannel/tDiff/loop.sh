@@ -20,7 +20,7 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdirs=(2026-04-22)
+subdirs=(2026-05-17)
 # select the CSV file where the channel mapping is defined
 channelMapping=2026-04-21.csv
 #channelMapping=2024-06-10.csv

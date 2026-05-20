@@ -4,204 +4,168 @@
 #include "TDecompSVD.h"
 #include <iostream>
 #include <cmath>
+#include <limits>
 using std::cout;
 using std::endl;
 
-void TSyncSolver::solve(std::vector<Module>& modules) 
+void TSyncSolver::solve(std::vector<Module>& modules)
 {
-	//First Do Hime+
-	{
-		const int startBar = 0;
-		const int nBars = Constants::nLayersPerWallHimeP*Constants::nModulesPerLayer;
+    struct Equation {
+        int bar1, bar2;
+        double value, weight;
+    };
 
-		struct Equation {
-			int bar1, bar2;
-			double value, weight;
-		};
-		std::vector<Equation> equations;
+    auto solveSubSystem = [&](int startBar, int nBars, int nLayers)
+    {
+        // first collect all equations without active check
+        std::vector<Equation> allEquations;
+        for(int id = 0; id < nBars; id++) {
+            Module& m = modules[id + startBar];
+            int layer = id / Constants::nModulesPerLayer;
 
-		for(int id = startBar; id < nBars; id++) {
-			Module& m = modules[id];
-			int layer = id / Constants::nModulesPerLayer;
-			//if(id == 288)
-			//	continue;
+            // NextBar equations
+            int nextID = id + 1;
+            if(!std::isnan(m.tSyncNextBar.Value) &&
+               !std::isnan(m.tSyncNextBar.Error) &&
+               m.tSyncNextBar.Error > 0. &&
+               (id + 1) % Constants::nModulesPerLayer != 0 &&
+               nextID < nBars) {
+                allEquations.push_back({
+                    id,
+                    nextID,
+                    m.tSyncNextBar.Value,
+                    1.0 / m.tSyncNextBar.Error
+                });
+            }
 
-			// NextBar equations - check not last bar in layer
-			if(!std::isnan(m.tSyncNextBar.Value) &&
-					!std::isnan(m.tSyncNextBar.Error) &&
-					m.tSyncNextBar.Error > 0. &&
-					(id+1) % Constants::nModulesPerLayer != 0) {
-				equations.push_back({
-						id, 
-						id + 1,
-						m.tSyncNextBar.Value,
-						1.0 / m.tSyncNextBar.Error
-						});
-			}
+            // NextPlane equations
+            if(layer < nLayers - 1) {
+                for(int ob = 0; ob < Constants::nModulesPerLayer; ob++) {
+                    int otherID = (layer + 1) * Constants::nModulesPerLayer + ob;
+                    if(otherID >= nBars) continue;
+                    if(!std::isnan(m.tSyncNextPlane[ob].Value) &&
+                       !std::isnan(m.tSyncNextPlane[ob].Error) &&
+                       m.tSyncNextPlane[ob].Error > 0.) {
+                        allEquations.push_back({
+                            id,
+                            otherID,
+                            m.tSyncNextPlane[ob].Value,
+                            1.0 / m.tSyncNextPlane[ob].Error
+                        });
+                    }
+                }
+            }
+        }
 
-			// NextPlane equations - check not last layer
-			if(layer < Constants::nLayersPerWall - 1) {
-				//if(layer != 11) {
-				for(int ob = 0; ob < Constants::nModulesPerLayer; ob++) {
-					int otherID = (layer + 1) * Constants::nModulesPerLayer + ob;
-					if(!std::isnan(m.tSyncNextPlane[ob].Value) &&
-							!std::isnan(m.tSyncNextPlane[ob].Error) &&
-							m.tSyncNextPlane[ob].Error > 0.) {
-						equations.push_back({
-								id,
-								otherID,
-								m.tSyncNextPlane[ob].Value,
-								1.0 / m.tSyncNextPlane[ob].Error
-								});
-					}
-				}
-			}
-			}
+        // determine active bars from equations
+        // a bar is active if it appears in ANY equation as bar1 OR bar2
+        std::vector<bool> isActive(nBars, false);
+        for(auto& eq : allEquations) {
+            isActive[eq.bar1] = true;
+            isActive[eq.bar2] = true;
+        }
 
-			if(equations.size() < nBars) {
-				cout << "[TSyncSolver] Not enough equations (" 
-					<< equations.size() << " for " << nBars << " bars). Aborting." << endl;
-				return;
-			}
+        // report truly dead bars
+        for(int id = 0; id < nBars; id++) {
+            if(!isActive[id])
+                cout << "[TSyncSolver] Excluding dead bar " 
+                     << id + startBar << endl;
+        }
 
-			cout << "[TSyncSolver] Solving with " << equations.size() << " equations for " 
-				<< nBars << " unknowns." << endl;
+        // create index mapping from full to reduced
+        std::vector<int> barToReduced(nBars, -1);
+        std::vector<int> reducedToBar;
+        int nActive = 0;
+        for(int id = 0; id < nBars; id++) {
+            if(isActive[id]) {
+                barToReduced[id] = nActive++;
+                reducedToBar.push_back(id);
+            }
+        }
 
-			// +1 for sum=0 constraint
-			const int nEq = equations.size() + 1;
+        cout << "[TSyncSolver] " << nBars - nActive 
+             << " dead bars excluded, " << nActive 
+             << " active bars." << endl;
 
-			TMatrixD A(nEq, nBars);
-			TVectorD b(nEq);
-			A.Zero();
-			b.Zero();
+        // filter equations to only include active bars
+        std::vector<Equation> equations;
+        for(auto& eq : allEquations) {
+            if(isActive[eq.bar1] && isActive[eq.bar2]) {
+                equations.push_back({
+                    barToReduced[eq.bar1],
+                    barToReduced[eq.bar2],
+                    eq.value,
+                    eq.weight
+                });
+            }
+        }
 
-			// fill weighted equations: weight * (TSync_bar2 - TSync_bar1) = weight * value
-			for(int r = 0; r < (int)equations.size(); r++) {
-				auto& eq = equations[r];
-				A(r, eq.bar1) = -eq.weight;
-				A(r, eq.bar2) = +eq.weight;
-				b(r)          =  eq.value * eq.weight;
-			}
+        if((int)equations.size() < nActive) {
+            cout << "[TSyncSolver] Not enough equations ("
+                 << equations.size() << " for " << nActive
+                 << " active bars). Aborting." << endl;
+            return;
+        }
 
-			// sum = 0 constraint (pins global offset)
-			for(int col = 0; col < nBars; col++)
-				A(nEq-1, col) = 1.0;
-			b(nEq-1) = 0.;
+        cout << "[TSyncSolver] Solving with " << equations.size()
+             << " equations for " << nActive << " active bars." << endl;
 
-			// solve with SVD least squares
-			TDecompSVD svd(A);
-			bool ok;
-			TVectorD solution = svd.Solve(b, ok);
+        // +1 for sum=0 constraint
+        const int nEq = equations.size() + 1;
+        TMatrixD A(nEq, nActive);
+        TVectorD b(nEq);
+        A.Zero();
+        b.Zero();
 
-			if(!ok) {
-				cout << "[TSyncSolver] SVD solve failed!" << endl;
-				return;
-			}
+        // fill weighted equations
+        for(int r = 0; r < (int)equations.size(); r++) {
+            auto& eq = equations[r];
+            A(r, eq.bar1) = -eq.weight;
+            A(r, eq.bar2) = +eq.weight;
+            b(r)          =  eq.value * eq.weight;
+        }
 
-			// store results back into modules
-			std::vector<double> result(nBars);
-			for(int i = startBar; i < nBars; i++) {
-				result[i] = solution(i);
-				modules[i].tSync = {solution(i), 0.}; // error not available from SVD directly
-				//cout<<modules[i].tSync.Value<<endl;
-			}
-		}
-		//now do Hime
-		{
-			const int startBar = Constants::nLayersPerWallHimeP*Constants::nModulesPerLayer;
-			const int nBars = Constants::nModules - startBar;
+        // sum = 0 constraint
+        for(int col = 0; col < nActive; col++)
+            A(nEq-1, col) = 1.0;
+        b(nEq-1) = 0.;
 
-			struct Equation {
-				int bar1, bar2;
-				double value, weight;
-			};
-			std::vector<Equation> equations;
+        // solve with SVD
+        TDecompSVD svd(A);
+        bool ok;
+        TVectorD solution = svd.Solve(b, ok);
 
-			for(int id = 0; id < nBars; id++) {
-				Module& m = modules[id + startBar];
-				int layer = id / Constants::nModulesPerLayer;
-			//	if(id == 288)
-			//		continue;
+        if(!ok) {
+            cout << "[TSyncSolver] SVD solve failed!" << endl;
+            return;
+        }
 
-				// NextBar equations - check not last bar in layer
-				if(!std::isnan(m.tSyncNextBar.Value) &&
-						!std::isnan(m.tSyncNextBar.Error) &&
-						m.tSyncNextBar.Error > 0. &&
-						(id+1) % Constants::nModulesPerLayer != 0) {
-					equations.push_back({
-							id, 
-							id + 1,
-							m.tSyncNextBar.Value,
-							1.0 / m.tSyncNextBar.Error
-							});
-				}
+        // store results back into modules
+        for(int id = 0; id < nBars; id++) {
+            if(isActive[id]) {
+                modules[id + startBar].tSync = {
+                    solution(barToReduced[id]), 0.};
+            } else {
+                modules[id + startBar].tSync = {
+                    std::numeric_limits<double>::quiet_NaN(), 0.};
+                cout << "[TSyncSolver] Dead bar " << id + startBar
+                     << " gets NaN tSync." << endl;
+            }
+            cout << "[TSyncSolver] Bar " << id + startBar 
+                 << "\t tSync = " << modules[id + startBar].tSync.Value 
+                 << endl;
+        }
+    };
 
-				// NextPlane equations - check not last layer
-				if(layer < Constants::nLayersPerWall - 1) {
-					//if(layer != 11) {
-					for(int ob = 0; ob < Constants::nModulesPerLayer; ob++) {
-						int otherID = (layer + 1) * Constants::nModulesPerLayer + ob;
-						if(!std::isnan(m.tSyncNextPlane[ob].Value) &&
-								!std::isnan(m.tSyncNextPlane[ob].Error) &&
-								m.tSyncNextPlane[ob].Error > 0.) {
-							equations.push_back({
-									id,
-									otherID,
-									m.tSyncNextPlane[ob].Value,
-									1.0 / m.tSyncNextPlane[ob].Error
-									});
-						}
-					}
-				}
-				}
+    // solve HIME+
+    cout << "[TSyncSolver] ---- Solving HIME+ ----" << endl;
+    const int startHimeP = 0;
+    const int nBarsHimeP = Constants::nLayersPerWallHimeP * Constants::nModulesPerLayer;
+    solveSubSystem(startHimeP, nBarsHimeP, Constants::nLayersPerWallHimeP);
 
-				if(equations.size() < nBars) {
-					cout << "[TSyncSolver] Not enough equations (" 
-						<< equations.size() << " for " << nBars << " bars). Aborting." << endl;
-					return;
-				}
-
-				cout << "[TSyncSolver] Solving with " << equations.size() << " equations for " 
-					<< nBars << " unknowns." << endl;
-
-				// +1 for sum=0 constraint
-				const int nEq = equations.size() + 1;
-
-				TMatrixD A(nEq, nBars);
-				TVectorD b(nEq);
-				A.Zero();
-				b.Zero();
-
-				// fill weighted equations: weight * (TSync_bar2 - TSync_bar1) = weight * value
-				for(int r = 0; r < (int)equations.size(); r++) {
-					auto& eq = equations[r];
-					A(r, eq.bar1) = -eq.weight;
-					A(r, eq.bar2) = +eq.weight;
-					b(r)          =  eq.value * eq.weight;
-				}
-
-				// sum = 0 constraint (pins global offset)
-				for(int col = 0; col < nBars; col++)
-					A(nEq-1, col) = 1.0;
-				b(nEq-1) = 0.;
-
-				// solve with SVD least squares
-				TDecompSVD svd(A);
-				bool ok;
-				TVectorD solution = svd.Solve(b, ok);
-
-				if(!ok) {
-					cout << "[TSyncSolver] SVD solve failed!" << endl;
-					return;
-				}
-
-				// store results back into modules
-				std::vector<double> result(nBars);
-				for(int i = startBar; i < nBars + startBar; i++) {
-					result[i - startBar] = solution(i - startBar);
-					modules[i].tSync = {solution(i - startBar), 0.}; // error not available from SVD directly
-					//cout<<modules[i].tSync.Value<<endl;
-				}
-
-			}
-		}
+    // solve HIME
+    cout << "[TSyncSolver] ---- Solving HIME ----" << endl;
+    const int startHime = nBarsHimeP;
+    const int nBarsHime = Constants::nModules - startHime;
+    solveSubSystem(startHime, nBarsHime, Constants::nLayersPerWall);
+}

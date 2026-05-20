@@ -20,7 +20,7 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2026-04-21
+subdir=2026-05-17
 #subdir=test
 # number of counts required in each projection in order to apply a Gaussian fit
 nCountsPerProjection=40

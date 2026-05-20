@@ -65,7 +65,7 @@ namespace Constants{
 	const float layerGapHime = 40.;
 	
 	//Gap between walls
-	const float wallGap = 465.;
+	const float wallGap = 457.;
 	
 
 	// *** dimensions of detector walls ***

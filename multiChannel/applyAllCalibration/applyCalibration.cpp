@@ -38,14 +38,14 @@ using std::endl;
 
 
 
-void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* subdir_posCalibration, bool plot){
+void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* subdir_Calibration, bool plot){
 
 	TDiffData input(TString(trb3dir ) + "/data/tDiff/" + TString(dir), filename);
 	int nEvents = input.getNEvents();
 
 	CalData output(TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/" + TString(filename), input);
 
-	CalibrationFunctions CalFuncs(TString(trb3dir) + "/data/CalibrationFromTracking/" + TString(subdir_posCalibration) + "/calibration.root");
+	CalibrationFunctions CalFuncs(TString(trb3dir) + "/data/CalibrationFromTracking/" + TString(subdir_Calibration) + "/calibration.root");
 
 	vector<vector<string>> csvData = CSVReader::read(TString(trb3dir) + "/data/geometry/" + TString(geometryFile), 5);
 	vector<Module> modules(Constants::nModules);

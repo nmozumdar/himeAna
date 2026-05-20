@@ -258,7 +258,7 @@ void Fit::fitCalibrationFunctionsE(Module& m){
 	m.calibrationFunction->SetParameter(1,1.5);
 
 	m.maxGraphE.Fit(m.calibrationFunction, "rq0");
-	if(fabs(m.calibrationFunction->GetParameter(0)) > 60)
+	if(fabs(m.calibrationFunction->GetParameter(0)) > 1000)
 	{
 		cout << "[Fit] Warning: Bad Energy fit for Module " << m.id << endl;
 		m.calibrationFunction->SetParameter(0,-30);
