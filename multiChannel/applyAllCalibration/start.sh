@@ -20,10 +20,10 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2026-05-17
-filename=hime_cosmics_26137032137.root
-geometryFile=2026-05-04.csv
-subdir_Calibration=2026-05-17
+subdir=exp_cosmics_21
+filename=hime_run1721_26163010958.root
+geometryFile=2026-07-31.csv
+subdir_Calibration=exp_cosmics_21
 
 source ../../common/common.sh
 

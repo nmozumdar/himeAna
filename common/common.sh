@@ -4,7 +4,8 @@
 #source /home/hime/trbsoft/trb3/rootbuild/bin/thisroot.sh
 export ROOT_CALL="root -l --web=server:8877 -e"
 export HIME_ANA_DIRECTORY="/home/hime/himeAna"
-export HIME_DATA_DIRECTORY="/d/d04-1/ag_au/HIME_2022"
+#export HIME_DATA_DIRECTORY="/d/d04-1/ag_au/HIME_2022"
+export HIME_DATA_DIRECTORY="/home/hime/anaData2026exp/rootfiles/hime"
 # ------------------------------
 
 export LD_LIBRARY_PATH=$HIME_ANA_DIRECTORY/common/lib:$LD_LIBRARY_PATH

@@ -24,6 +24,7 @@
 
 #include "Module.h"
 #include "TH1D.h"
+#include "TProfile.h"
 #include <vector>
 
 class Fit{

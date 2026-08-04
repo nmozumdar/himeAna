@@ -46,7 +46,7 @@ Detector::Detector(){
 		tracks[c]->SetName(TString("track_") + coordinateNames[c]);
 		tracks[c]->GetXaxis()->SetTitle("z \\mbox{ (mm)}");
 		tracks[c]->GetYaxis()->SetTitle(TString(coordinateNames[c]) + " \\mbox{ (mm)}");
-		trackFits[c] = new TF1(TString("trackFit_") + coordinateNames[c], "[0] + [1] * x", -600., 600);
+		trackFits[c] = new TF1(TString("trackFit_") + coordinateNames[c], "[0] + [1] * x", -1000., 1000);
 	}
 
 	// initialize modules (assign ID and position of the center of each module)

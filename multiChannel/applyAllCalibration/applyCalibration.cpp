@@ -85,12 +85,12 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 			float randomOffset = Constants::moduleWith * (randgen.Uniform() - 0.5);
 			
 			if(m.isHorizontal){
-				output.x[hit] = -calibratedPos;
+				output.x[hit] = calibratedPos;
 				output.y[hit] = m.y + randomOffset;
 			}
 			else{
 				output.x[hit] = m.x + randomOffset;
-				output.y[hit] = -calibratedPos;
+				output.y[hit] = calibratedPos;
 			}
 			output.z[hit] = m.z + Constants::moduleDepth * (randgen.Uniform() - 0.5);
 			output.tof[hit] = CalFuncs.getTofCorr(moduleID, input.getTofRaw(hit));
@@ -100,7 +100,6 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 			output.time[hit] = (output.t0[hit] + output.t1[hit]) / 2.;
 			output.energy[hit] = CalFuncs.getECalibratedValue(moduleID, input.getCombinedTot(hit));
 		}
-		
 		hc.fill(input, output);
 
 		output.fill();

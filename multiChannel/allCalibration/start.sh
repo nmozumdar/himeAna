@@ -20,10 +20,10 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=2026-05-17
+subdir=exp_cosmics_21
 #subdir=test
 # number of counts required in each projection in order to apply a Gaussian fit
-nCountsPerProjection=40
+nCountsPerProjection=100
 # number of projections required in order to perform a fit of the linear position-calibration function
 nProjections=2
 # ------------------------------

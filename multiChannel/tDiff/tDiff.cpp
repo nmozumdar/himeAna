@@ -64,14 +64,14 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 
 	// ---------------- Input ----------------
 
-	TString pathInput(TString(trb3dir) + "/data/unpacked/" + TString(dir) + "/" + TString(filename));
-	//TString pathInput("/d/d04-1/ag_au/HIME_2022/unpacked/" + TString(dir) + "/" + TString(filename));
+	//TString pathInput(TString(trb3dir) + "/unpacked/" + TString(dir) + "/" + TString(filename));
+	TString pathInput(TString(trb3dir) + "/unpacked/" + TString(filename));
 	TRB3RawData input(pathInput);
 
 	// ---------------- Output ----------------
 
-	TString pathOutput(TString(trb3dir) + "/data/tDiff/" + TString(dir) + "/" + TString(filename));
-	//TString pathOutput("/d/d04-1/ag_au/HIME_2022/data/tDiff/" + TString(dir) + "/" + TString(filename));
+	//TString pathOutput(TString(trb3dir) + "/tDiff/" + TString(dir) + "/" + TString(filename));
+	TString pathOutput(TString(trb3dir) + "/tDiff/" + TString(filename));
 	TDiffData output(pathOutput);
 
 	// ---------------- Channel mapping ----------------

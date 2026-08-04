@@ -21,15 +21,15 @@
 
 # ---------- settings ----------
 # select the data you want to calibrate
-subdir=2026-04-21
+subdir=exp_cosmics_21
 #subdir=2024-06-25_cosmics
-geometryFile=2026-05-04.csv
+geometryFile=2026-07-31.csv
 # The thresholds will NOT apply a cut on the data that are written to the output TTree object!
 # Only the data shown in the histograms are affected.
 # Leave empty (also remove spaces or tab symbols behind "=") to apply no thresholds.
 thresholdsFile=2024-06-21.csv
 # here you define the (previously determined) position calibration that you want to apply
-subdir_calibration=2026-04-21
+subdir_Calibration=exp_cosmics_21
 # ------------------------------
 
 source ../../common/common.sh
@@ -40,12 +40,12 @@ if [ $? -eq 0 ]; then
 	
 	fileCounter=0
 	
-	create_directory applyAllCalibration "$subdir"
+	create_directory calibratedFiles "$subdir"
 
 	for filename in "$HIME_DATA_DIRECTORY"/data/tDiff/"$subdir"/*.root; do
 		check_threads "$fileCounter"
 		filename=$(basename "$filename")
-		$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${thresholdsFile}\",\"${subdir_calibration}\", false)" > /dev/null &
+		$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${subdir_Calibration}\", false)" > /dev/null &
 		fileCounter=`expr ${fileCounter} + 1`
 	done
 

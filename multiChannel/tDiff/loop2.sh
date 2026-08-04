@@ -20,23 +20,18 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-#subdir=2025-12-10
-subdir=2026-05-19
-#filename=himede_layer11_modules16-23_900V_0x200_0000.root
-filename=hime_run1721_26162164312.root
-# select the CSV file where the channel mapping is defined
-#channelMapping=2024-09-03_de.csv
-trigger=-1
+subdirs=(exp_cosmics_21)
 # select the CSV file where the channel mapping is defined
 channelMapping=2026-04-21.csv
-#channelMapping=2025-10-03.csv
+#channelMapping=2024-06-10.csv
+trigger=-1
+# select the CSV file where the channel mapping is defined
+#channelMapping=2024-09-12_de.csv
 # choose if you want to take only the first pulse in each bar
 # for your analysis. Otherwise, multiple hits can be detected 
 # in each module, but there might be more noise.
 # false -> first hit only;   true -> all hits
 multihit=false
-plot=true
-write=true
 # ------------------------------
 
 source ../../common/common.sh
@@ -45,12 +40,17 @@ make
 
 if [ $? -eq 0 ]; then
 
-	#create_directory tDiff "$subdir"
+	fileCounter=0
 
-	# start 
-	filename=$(basename "$filename")
-	$ROOT_CALL "tDiff(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",\"${filename}\",\"${channelMapping}\",${trigger},${multihit},${write},${plot})" 
+		# loop over all files
+		#for filename in "$HIME_DATA_DIRECTORY"/data/unpacked/"$subdir"/*.root; do
+		for filename in "$HIME_DATA_DIRECTORY"/unpacked/*.root; do
+			check_threads "$fileCounter"
+			filenameBase=$(basename "$filename")
+			$ROOT_CALL "tDiff(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",\"${filenameBase}\",\"${channelMapping}\",${trigger},${multihit},true,false)" > /dev/null &
+			fileCounter=`expr ${fileCounter} + 1`
+		done
+		wait
 
-	wait
-	echo -e "\nstart.sh done."
+		echo -e "\nloop.sh done."
 fi;

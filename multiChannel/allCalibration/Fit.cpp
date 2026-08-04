@@ -243,13 +243,21 @@ void Fit::fitCalibrationFunctions(Module& m){
 	double smallDt, largeDt, tmp;
 	m.maxGraph.GetPoint(0, smallDt, tmp);
 	m.maxGraph.GetPoint(m.maxGraph.GetN()-1, largeDt, tmp);
-//	m.posCalFunc->SetRange(smallDt - 3., largeDt + 3.);
+	m.posCalFunc->SetRange(smallDt, largeDt);
 
 	m.maxGraph.Fit(m.posCalFunc, "rq0");
-	if(fabs(m.getEffectiveVelocity()) > 200)
+	if(fabs(fabs(m.getEffectiveVelocity()) - 144) > 10)
 	{
 		cout << "[Fit] Warning: Bad tDiff fit for Module " << m.id << endl;
-		m.hPosVsTDiff.Fit(m.posCalFunc,"rq0");
+		cout<<"[Fit] Old vEff: "<<m.getEffectiveVelocity()<<endl;
+		m.posCalFunc->SetRange(smallDt - 10., largeDt + 10.);
+		TProfile* prof = m.hPosVsTDiff.ProfileX("prof");
+		//m.hPosVsTDiff.Fit(m.posCalFunc,"rq0");
+		prof->Fit(m.posCalFunc,"rq0");
+		//m.posCalFunc->FixParameter(1, -148.6*m.posCalFunc->GetParameter(1)/m.posCalFunc->GetParameter(0));
+		//m.posCalFunc->FixParameter(0, -148.6);
+		cout<<"[Fit] new vEff: "<<m.getEffectiveVelocity()<<endl;
+		delete prof;
 	}
 }
 void Fit::fitCalibrationFunctionsE(Module& m){
