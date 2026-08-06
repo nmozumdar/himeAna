@@ -53,7 +53,8 @@ void tracking(TString trb3dir, TString subdir){
 	if(!subdir.EndsWith("/")) subdir += "/";
 	TString subdir_without_slash(subdir);
 	subdir_without_slash.Remove(subdir_without_slash.Length()-1, 1);
-	TDiffData input(trb3dir + "/data/tDiff/" + subdir);
+	//TDiffData input(trb3dir + "/data/tDiff/" + subdir);
+	TDiffData input(trb3dir + "/tDiff/" + subdir);
 	const int nEvents = input.getNEvents();
 
 	// ---------------- First loop over events: Fill histograms ----------------
@@ -112,7 +113,8 @@ void tracking(TString trb3dir, TString subdir){
 	hime.addNEntriesToHistTitle();
 
 	// fill histograms and write them to a file
-	TString pathOut(trb3dir + "/data/trackingForAllCalibration/" + subdir_without_slash + ".root");
+	//TString pathOut(trb3dir + "/data/trackingForAllCalibration/" + subdir_without_slash + ".root");
+	TString pathOut(trb3dir + "/calibration/trackingForAllCalibration/" + subdir_without_slash + ".root");
 	cout << "[tracking] Writing file " << pathOut << endl;
 	TFile* fileOut = new TFile(pathOut, "recreate");
 

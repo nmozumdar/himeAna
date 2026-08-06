@@ -20,7 +20,7 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=exp_cosmics_21
+subdir=cosmic_2_1
 #subdir=test
 # number of counts required in each projection in order to apply a Gaussian fit
 nCountsPerProjection=100
@@ -35,7 +35,7 @@ make
 if [ $? -eq 0 ]; then
 
 	# create directory for output
-	create_directory CalibrationFromTracking "$subdir"
+	#create_directory calibrationParameter "$subdir"
 	
 	# start 
 	#$ROOT_CALL "calculateCalibrationFunctions(\"${HIME_ANA_DIRECTORY}\",\"${subdir}\",${nCountsPerProjection},${nProjections})" 

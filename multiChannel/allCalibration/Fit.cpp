@@ -241,8 +241,8 @@ void Fit::fitCalibrationFunctions(Module& m){
 	// take the range of the data points in the TGraphErrors of each module
 	// and extend it by 2 ns
 	double smallDt, largeDt, tmp;
-	m.maxGraph.GetPoint(0, smallDt, tmp);
-	m.maxGraph.GetPoint(m.maxGraph.GetN()-1, largeDt, tmp);
+	m.maxGraph.GetPoint(0, largeDt, tmp);
+	m.maxGraph.GetPoint(m.maxGraph.GetN()-1, smallDt, tmp);
 	m.posCalFunc->SetRange(smallDt, largeDt);
 
 	m.maxGraph.Fit(m.posCalFunc, "rq0");
@@ -250,7 +250,7 @@ void Fit::fitCalibrationFunctions(Module& m){
 	{
 		cout << "[Fit] Warning: Bad tDiff fit for Module " << m.id << endl;
 		cout<<"[Fit] Old vEff: "<<m.getEffectiveVelocity()<<endl;
-		m.posCalFunc->SetRange(smallDt - 10., largeDt + 10.);
+		m.posCalFunc->SetRange(smallDt + 5., largeDt - 5.);
 		TProfile* prof = m.hPosVsTDiff.ProfileX("prof");
 		//m.hPosVsTDiff.Fit(m.posCalFunc,"rq0");
 		prof->Fit(m.posCalFunc,"rq0");

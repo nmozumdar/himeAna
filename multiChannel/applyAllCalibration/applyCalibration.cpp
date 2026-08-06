@@ -40,14 +40,18 @@ using std::endl;
 
 void applyCalibration(const char* trb3dir, const char* dir, const char* filename, const char* geometryFile, const char* subdir_Calibration, bool plot){
 
-	TDiffData input(TString(trb3dir ) + "/data/tDiff/" + TString(dir), filename);
+	//TDiffData input(TString(trb3dir ) + "/data/tDiff/" + TString(dir), filename);
+	TDiffData input(TString(trb3dir ) + "/tDiff/" + TString(dir), filename);
 	int nEvents = input.getNEvents();
 
-	CalData output(TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/" + TString(filename), input);
+	//CalData output(TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/" + TString(filename), input);
+	CalData output(TString(trb3dir) + "/calibratedFiles/" + TString(dir) + "/" + TString(filename), input);
 
-	CalibrationFunctions CalFuncs(TString(trb3dir) + "/data/CalibrationFromTracking/" + TString(subdir_Calibration) + "/calibration.root");
+	//CalibrationFunctions CalFuncs(TString(trb3dir) + "/data/CalibrationFromTracking/" + TString(subdir_Calibration) + "/calibration.root");
+	CalibrationFunctions CalFuncs(TString(trb3dir) + "/calibration/calibrationParameter/" + TString(subdir_Calibration) + "/calibration.root");
 
-	vector<vector<string>> csvData = CSVReader::read(TString(trb3dir) + "/data/geometry/" + TString(geometryFile), 5);
+	//vector<vector<string>> csvData = CSVReader::read(TString(trb3dir) + "/data/geometry/" + TString(geometryFile), 5);
+	vector<vector<string>> csvData = CSVReader::read(TString(trb3dir) + "/geometry/" + TString(geometryFile), 5);
 	vector<Module> modules(Constants::nModules);
 
 	for(const vector<string> &line : csvData){
@@ -107,11 +111,14 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 
 	output.write();
 
-	TFile* histFile = new TFile(TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/hist_" + TString(filename), "recreate");
+	//TFile* histFile = new TFile(TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/hist_" + TString(filename), "recreate");
+	TFile* histFile = new TFile(TString(trb3dir) + "/calibratedFiles/" + TString(dir) + "/hist_" + TString(filename), "recreate");
         hc.write(histFile);
 
-	cout << "[applyCalibration] Calibration Finished. File written to " << TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/" + TString(filename) << endl;
-	cout << "[applyCalibration] Histogram file written to " << TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/hist_" + TString(filename) << endl;
+	//cout << "[applyCalibration] Calibration Finished. File written to " << TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/" + TString(filename) << endl;
+	cout << "[applyCalibration] Calibration Finished. File written to " << TString(trb3dir) + "/calibratedFiles/" + TString(dir) + "/" + TString(filename) << endl;
+	//cout << "[applyCalibration] Histogram file written to " << TString(trb3dir) + "/data/calibratedFiles/" + TString(dir) + "/hist_" + TString(filename) << endl;
+	cout << "[applyCalibration] Histogram file written to " << TString(trb3dir) + "/calibratedFiles/" + TString(dir) + "/hist_" + TString(filename) << endl;
 
 	if(!plot) return;
 //	Drawer dr;

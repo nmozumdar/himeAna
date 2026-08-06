@@ -20,7 +20,7 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=exp_cosmics_21/
+subdir=cosmic_2_1/
 #subdir=test/
 # ------------------------------
 
