@@ -24,7 +24,8 @@ check_threads () {
 
 # create a new directory for output 
 create_directory () {
-	OUTPUT_DIRECTORY="$HIME_DATA_DIRECTORY"/data/"$1"/"$2"
+	#OUTPUT_DIRECTORY="$HIME_DATA_DIRECTORY"/data/"$1"/"$2"
+	OUTPUT_DIRECTORY="$HIME_DATA_DIRECTORY"/"$1"/"$2"
 	if [ ! -d "$OUTPUT_DIRECTORY" ]; then
 		echo -e "\n"[common.sh] creating directory "$OUTPUT_DIRECTORY" "\n"
 		mkdir "$OUTPUT_DIRECTORY"
@@ -44,7 +45,8 @@ get_all_files () {
 # write the file names of all root files in subdir to a temporary file
 write_filenames_to_tmpfile () {
 	rm -f tmpfile.txt~
-	for COMPLETE_PATH in "$HIME_DATA_DIRECTORY"/data/"$1"/"$2"/*.root; do
+	#for COMPLETE_PATH in "$HIME_DATA_DIRECTORY"/data/"$1"/"$2"/*.root; do
+	for COMPLETE_PATH in "$HIME_DATA_DIRECTORY"/"$1"/"$2"/*.root; do
 		echo $(basename $COMPLETE_PATH) >> tmpfile.txt~
 	done
 }
