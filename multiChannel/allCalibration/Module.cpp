@@ -31,13 +31,26 @@ Module::Module(){
 
 
 
-Module::Module(int id, const TH2F* hPosVsTDiff, const TH1F* hDtNextBar, const TH2F* hDtNextPlane, const TH2F* hEDepVsTot){	
+Module::Module(int id, const TH2F* hPosVsTDiff, const TH1F* hDtNextBar, const TH2F* hDtNextPlane, const TH2F* hEDepVsTot, ValueErrorPair gammapoint){	
 	this -> id = id;
 	this -> hPosVsTDiff = TH2F(*hPosVsTDiff);
 	this -> hDtNextBar = TH1F(*hDtNextBar);
 	this -> hDtNextPlane = TH2F(*hDtNextPlane);
 	this -> hEDepVsTot = TH2F(*hEDepVsTot);
-	this -> nEPar = 2;
+
+	if(gammapoint.Value > 0)
+	{
+		this -> gammaPointSet = true;
+		this -> gammaPoint = gammapoint;
+		this -> nEPar = 3;
+	}
+	else
+	{
+		this -> gammaPointSet = false;
+		this -> gammaPoint = gammapoint;
+		this -> nEPar = 2;
+	}
+
 	posCalFunc = new TF1("posCalFunc_" + Convert::toNdigit(id, 3), "[0] / 2. * x + [1]", -Constants::moduleLength / 2., Constants::moduleLength / 2.);
 	calibrationSuccessful = false;
 	EcalibrationSuccessful = false;
@@ -45,12 +58,16 @@ Module::Module(int id, const TH2F* hPosVsTDiff, const TH1F* hDtNextBar, const TH
 	maxGraph.SetName("posGraph_" + Convert::toNdigit(id, 3));
 	maxGraphE = TGraphErrors();
 	maxGraphE.SetName("EnergyGraph_" + Convert::toNdigit(id, 3));
+
 }
 
 void Module::createCalibrationFunctionE(){
 
-        //const char* formula = isHorizontal ? "[0] + [1] * x" : "[0] + [1] * x + [2] * x * x" ;
-        const char* formula = "[0] + [1] * x";
+	const char* formula;
+	if(nEPar == 3)
+        	formula = "[0] + [1] * x + [2] * x * x" ;
+	else
+		formula = "[0] + [1] * x";
         double rangeMin, rangeMax, tmp;
         maxGraphE.GetPoint(0, rangeMin, tmp);
         maxGraphE.GetPoint(maxGraphE.GetN()-1, rangeMax, tmp);

@@ -29,7 +29,7 @@ geometryFile=2026-07-31.csv
 # Leave empty (also remove spaces or tab symbols behind "=") to apply no thresholds.
 thresholdsFile=2024-06-21.csv
 # here you define the (previously determined) position calibration that you want to apply
-subdir_Calibration=exp_cosmics_21
+subdir_Calibration=cosmic_2_1
 # ------------------------------
 
 source ../../common/common.sh
@@ -42,7 +42,7 @@ if [ $? -eq 0 ]; then
 	
 	create_directory calibratedFiles "$subdir"
 
-	for filename in "$HIME_DATA_DIRECTORY"/data/tDiff/"$subdir"/*.root; do
+	for filename in "$HIME_DATA_DIRECTORY"/tDiff/"$subdir"/*.root; do
 		check_threads "$fileCounter"
 		filename=$(basename "$filename")
 		$ROOT_CALL "applyCalibration( \"${HIME_DATA_DIRECTORY}\", \"${subdir}\", \"${filename}\", \"${geometryFile}\", \"${subdir_Calibration}\", false)" > /dev/null &

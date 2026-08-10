@@ -33,12 +33,12 @@ class Module{
 	public:
 	
 	Module();
-	Module(int id, const TH2F* hPosVsTDiff, const TH1F* hDtNextBar, const TH2F* hDtNextPlane, const TH2F* hEDepVsTot);
 	struct ValueErrorPair
             {
                 Double_t Value;
                 Double_t Error;
             };
+	Module(int id, const TH2F* hPosVsTDiff, const TH1F* hDtNextBar, const TH2F* hDtNextPlane, const TH2F* hEDepVsTot, ValueErrorPair gammapoint);
 	double getEffectiveVelocity() const { return posCalFunc->GetParameter(0); }
 	double getPositionOffset() const { return posCalFunc->GetParameter(1); }
 	double getEffectiveVelocityUnc() const { return posCalFunc->GetParError(0); }
@@ -49,6 +49,8 @@ class Module{
 	bool EcalibrationSuccessful;
 	int id;
 	int nEPar;
+	bool gammaPointSet;		//check if Y88 source compton edge included
+	ValueErrorPair gammaPoint;
 	ValueErrorPair tSyncNextBar;
 	std::array<ValueErrorPair, Constants::nModulesPerLayer> tSyncNextPlane;
 	ValueErrorPair tSync;

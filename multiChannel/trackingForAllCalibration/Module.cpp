@@ -30,7 +30,7 @@ using std::array;
 Module::Module(int id, int layer, bool horizontal, float x, float y, float z){
 
 	// initialize TH2F for (tDiff, pos) data pairs
-	hPosVsTDiff = new TH2F(TString("hPosVsTDiff_module_") + Convert::toNdigit(id, 3), "", 200, -60, 60, 100, -500, 500);
+	hPosVsTDiff = new TH2F(TString("hPosVsTDiff_module_") + Convert::toNdigit(id, 3), "", 180, -60, 60, 100, -500, 500);
 	hDtNextBar = new TH1F(TString("hDtNextBar_module_") + Convert::toNdigit(id, 3), "", 200, -40, 40);
 	hDtNextPlane = new TH2F(TString("hDtNextPlane_module_") + Convert::toNdigit(id, 3), "", 25, -0.5, 24.5, 200, -40, 40);
 
@@ -49,7 +49,7 @@ Module::Module(int id, int layer, bool horizontal, float x, float y, float z){
 	avgToT = new TH1F(TString("AvgToT_module_") + Convert::toNdigit(id, 3), "", 200, 0, 50);
 	avgToT->GetXaxis()->SetTitle("ToT (arb Units)");
 
-	hEDepVsTot = new TH2F("hEDepVsTot_" + Convert::toNdigit(id, 3), title, 130, 0, 50, 80, 0, 40);
+	hEDepVsTot = new TH2F("hEDepVsTot_" + Convert::toNdigit(id, 3), title, 100, 0, 50, 160, 0, 40);
         hEDepVsTot->GetXaxis()->SetTitle("ToT (ns)");
         hEDepVsTot->GetYaxis()->SetTitle("Energy deposition (MeV)");
 

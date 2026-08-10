@@ -30,12 +30,25 @@ Input::Input(TString path, vector<Module>& modules){
 	
 	modules = vector<Module>(Constants::nModules);
 	file = new TFile(path, "read");
+	TH1F* gPoint = (TH1F*)file->Get("gamma_Point");
 
 	for(int moduleID = 0; moduleID < Constants::nModules; moduleID++){
 		TString histName("hPosVsTDiff_module_" + Convert::toNdigit(moduleID, 3));
 		TString histName1("hDtNextBar_module_" + Convert::toNdigit(moduleID, 3));
 		TString histName2("hDtNextPlane_module_" + Convert::toNdigit(moduleID, 3));
 		TString histName3("hEDepVsTot_" + Convert::toNdigit(moduleID, 3));
-		modules[moduleID] = Module(moduleID, (TH2F*) file->Get(histName), (TH1F*) file->Get(histName1), (TH2F*) file->Get(histName2), (TH2F*) file->Get(histName3));
+		double value, error;
+		if(gPoint == nullptr)
+		{
+			value = 0;
+			error = 0;
+			std::cout<<"[Input] No Gammma Point for Module "<<moduleID+1<<std::endl;
+		}
+		else
+		{
+			value = gPoint->GetBinContent(moduleID+1);
+			error = gPoint->GetBinError(moduleID+1);
+		}
+		modules[moduleID] = Module(moduleID, (TH2F*) file->Get(histName), (TH1F*) file->Get(histName1), (TH2F*) file->Get(histName2), (TH2F*) file->Get(histName3), {value, error});
 	}
 }

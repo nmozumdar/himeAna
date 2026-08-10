@@ -168,6 +168,15 @@ void Fit::fitGaussians(Module& m){
 void Fit::fitGaussiansE(Module& m){
 
 
+	if(m.gammaPointSet)
+	{
+		double tot2E = m.gammaPoint.Value;
+		double tot2EUnc = m.gammaPoint.Error;
+		int nPoints = m.maxGraphE.GetN();
+
+		m.maxGraphE.SetPoint(nPoints, tot2E, 1.612);
+		m.maxGraphE.SetPointError(nPoints, tot2EUnc, 0.);
+	}
 	// loop over all projections onto the tDiff axis and fit Gaussians to them
 	for(int i = 0; i < nBinsE; i++){
 
@@ -175,7 +184,7 @@ void Fit::fitGaussiansE(Module& m){
 
 		TH1D* projection = m.hEDepVsTot.ProjectionX("", bin, bin);
 
-		if(projection->GetEntries() < 500) continue;
+		if(projection->GetEntries() < 400) continue;
 		
 		TF1* fit = new TF1("fit", "[0] * exp( - (x - [1]) * (x - [1]) / [2] / [2])", 0., 100.);
 		fit->SetParameter(0, projection->GetMaximum());
@@ -256,7 +265,7 @@ void Fit::fitCalibrationFunctions(Module& m){
 		prof->Fit(m.posCalFunc,"rq0");
 		//m.posCalFunc->FixParameter(1, -148.6*m.posCalFunc->GetParameter(1)/m.posCalFunc->GetParameter(0));
 		//m.posCalFunc->FixParameter(0, -148.6);
-		cout<<"[Fit] new vEff: "<<m.getEffectiveVelocity()<<endl;
+		cout<<"[Fit] New vEff: "<<m.getEffectiveVelocity()<<endl;
 		delete prof;
 	}
 }
@@ -266,7 +275,7 @@ void Fit::fitCalibrationFunctionsE(Module& m){
 	m.calibrationFunction->SetParameter(1,1.5);
 
 	m.maxGraphE.Fit(m.calibrationFunction, "rq0");
-	if(fabs(m.calibrationFunction->GetParameter(0)) > 1000)
+	if(fabs(m.calibrationFunction->GetParameter(0)) > 100)
 	{
 		cout << "[Fit] Warning: Bad Energy fit for Module " << m.id << endl;
 		m.calibrationFunction->SetParameter(0,-30);

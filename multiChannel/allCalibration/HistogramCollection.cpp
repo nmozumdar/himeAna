@@ -70,6 +70,7 @@ void HistogramCollection::fill(vector<Module>& modules){
 		{
 			for(int iPar = 0; iPar < nParameters; iPar++){
 				hEnergyFitPar[iPar].SetBinContent(id + 1, modules[id].calibrationFunction->GetParameter(iPar));
+				hEnergyFitPar[iPar].SetBinError(id + 1, modules[id].calibrationFunction->GetParError(iPar));
 			}
 		}
 
