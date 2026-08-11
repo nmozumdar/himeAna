@@ -42,7 +42,7 @@ Module::Module(int id, const TH2F* hPosVsTDiff, const TH1F* hDtNextBar, const TH
 	{
 		this -> gammaPointSet = true;
 		this -> gammaPoint = gammapoint;
-		this -> nEPar = 3;
+		this -> nEPar = 4;
 	}
 	else
 	{
@@ -64,10 +64,10 @@ Module::Module(int id, const TH2F* hPosVsTDiff, const TH1F* hDtNextBar, const TH
 void Module::createCalibrationFunctionE(){
 
 	const char* formula;
-	if(nEPar == 3)
-        	formula = "[0] + [1] * x + [2] * x * x" ;
+	if(nEPar == 4)
+        	formula = "expo(0) + expo(2)" ;
 	else
-		formula = "[0] + [1] * x";
+		formula = "expo";
         double rangeMin, rangeMax, tmp;
         maxGraphE.GetPoint(0, rangeMin, tmp);
         maxGraphE.GetPoint(maxGraphE.GetN()-1, rangeMax, tmp);
@@ -81,5 +81,8 @@ void Module::write(TFile* file) const {
 	hPosVsTDiff.Write();
 	maxGraphE.Write();
 	maxGraph.Write();
+	if(maxGraphE.GetN() < 1)
+		return;
+	calibrationFunction->Write();
 
 }

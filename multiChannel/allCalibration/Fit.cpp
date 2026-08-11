@@ -271,15 +271,25 @@ void Fit::fitCalibrationFunctions(Module& m){
 }
 void Fit::fitCalibrationFunctionsE(Module& m){
 
-	m.calibrationFunction->SetParameter(0,-30);
-	m.calibrationFunction->SetParameter(1,1.5);
+	if(m.nEPar == 2)
+	{
+		m.calibrationFunction->SetParameter(0,-3.21406);
+		m.calibrationFunction->SetParameter(1,0.21873);
+	}
+	else
+	{
+		m.calibrationFunction->SetParameter(0,-3.21406);
+		m.calibrationFunction->SetParameter(1,0.21873);
+		m.calibrationFunction->SetParameter(2,-0.0276553);
+		m.calibrationFunction->SetParameter(3,-0.0266799);
+	}
 
 	m.maxGraphE.Fit(m.calibrationFunction, "rq0");
-	if(fabs(m.calibrationFunction->GetParameter(0)) > 100)
+	/*if(fabs(m.calibrationFunction->GetParameter(0)) > 100)
 	{
 		cout << "[Fit] Warning: Bad Energy fit for Module " << m.id << endl;
 		m.calibrationFunction->SetParameter(0,-30);
 		m.calibrationFunction->SetParameter(1,1.5);
 		m.hEDepVsTot.Fit(m.calibrationFunction,"rq0");
-	}
+	}*/
 }

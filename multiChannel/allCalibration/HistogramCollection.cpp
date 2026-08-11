@@ -45,8 +45,8 @@ HistogramCollection::HistogramCollection(){
 
 
 	// Initialize histograms showing the fit parameters of the energy-calibration functions
-        hEnergyFitPar = vector<TH1F>(3);
-        titles = {"Constant", "Slope", "Curvature"};
+        hEnergyFitPar = vector<TH1F>(4);
+        titles = {"p0", "p1", "p2","p3"};
         // loop over fit paramters
         for(int ip = 0; ip < hEnergyFitPar.size(); ip++){
                 hEnergyFitPar[ip] = TH1F("hEnergyFitPar" + Convert::toStr(ip), titles[ip], Constants::nModules, 0, Constants::nModules);
