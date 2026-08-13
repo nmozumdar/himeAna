@@ -30,7 +30,7 @@ Input::Input(TString path, vector<Module>& modules){
 	
 	modules = vector<Module>(Constants::nModules);
 	file = new TFile(path, "read");
-	TH1F* gPoint = (TH1F*)file->Get("hist_gamma_Y88");
+	TH1F* gPoint = (TH1F*)file->Get("hist_gamma_Y888");
 
 	for(int moduleID = 0; moduleID < Constants::nModules; moduleID++){
 		TString histName("hPosVsTDiff_module_" + Convert::toNdigit(moduleID, 3));

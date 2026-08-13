@@ -25,6 +25,7 @@
 #include "TMath.h"
 #include "TGraphErrors.h"
 #include "TKey.h"
+#include "Convert.h"
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -49,13 +50,9 @@ CalibrationFunctions::CalibrationFunctions(TString path)
 
 	// ===== Load energy calibration parameters from histograms =====
 
-	TH1F *hEPar0 = (TH1F *)file->Get("hEnergyFitPar0");
-	TH1F *hEPar1 = (TH1F *)file->Get("hEnergyFitPar1");
-	TH1F *hEPar2 = (TH1F *)file->Get("hEnergyFitPar2");
-	TH1F *hEPar3 = (TH1F *)file->Get("hEnergyFitPar3");
 	ECalFuncs = vector<TF1*>(Constants::nModules);
 
-	if (hVEff && hOffs && htSync && hEPar0 && hEPar1)
+	if (hVEff && hOffs && htSync)
 	{
 		for (int m = 0; m < Constants::nModules; m++)
 		{
@@ -70,42 +67,9 @@ CalibrationFunctions::CalibrationFunctions(TString path)
 			// Sync calibration
 			tSync[m] = htSync->GetBinContent(m + 1);
 
-			// Energy calibration
-			if(hEPar2 == nullptr || hEPar3 == nullptr)
-			{
-				cout << "[CalibrationFunctions] Fitting with single exponential" << endl;
-				double par0 = hEPar0->GetBinContent(m + 1);
-				double par1 = hEPar1->GetBinContent(m + 1);
-				if (par0 != 0. || par1 != 0.)
-				{
-					TString energyFuncName(TString("module_") + to_string(m).data() + TString("_ECalFunc"));
-					ECalFuncs[m] = new TF1(energyFuncName, "expo", 0, 1000);
-					ECalFuncs[m]->SetParameter(0, par0);
-					ECalFuncs[m]->SetParameter(1, par1);
-				}
-				else
-					cout << "[CalibrationFunctions] Warning: Missing Energy calibrationparameters for Module: " << m + 1 << endl;
-			}
-			else
-			{
-				cout << "[CalibrationFunctions] Fitting with double exponential" << endl;
-				double par0 = hEPar0->GetBinContent(m + 1);
-				double par1 = hEPar1->GetBinContent(m + 1);
-				double par2 = hEPar2->GetBinContent(m + 1);
-				double par3 = hEPar3->GetBinContent(m + 1);
-				if (par0 != 0. || par1 != 0. || par2 != 0. || par3 != 0.)
-				{
-					TString energyFuncName(TString("module_") + to_string(m).data() + TString("_ECalFunc"));
-					ECalFuncs[m] = new TF1(energyFuncName, "expo(0) + expo(2)", 0, 1000);
-					ECalFuncs[m]->SetParameter(0, par0);
-					ECalFuncs[m]->SetParameter(1, par1);
-					ECalFuncs[m]->SetParameter(2, par2);
-					ECalFuncs[m]->SetParameter(3, par3);
-				}
-				else
-					cout << "[CalibrationFunctions] Warning: Missing Energy calibrationparameters for Module: " << m + 1 << endl;
-
-			}
+			ECalFuncs[m] = (TF1*)file->Get("calibrationFunction" + Convert::toStr(m));
+			if (ECalFuncs[m] == nullptr)
+				cout << "[CalibrationFunctions] Warning: Missing Energy calibrationparameters for Module: " << m + 1 << endl;
 		}
 	}
 	else
