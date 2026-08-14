@@ -24,7 +24,6 @@ check_threads () {
 
 # create a new directory for output 
 create_directory () {
-	#OUTPUT_DIRECTORY="$HIME_DATA_DIRECTORY"/data/"$1"/"$2"
 	OUTPUT_DIRECTORY="$HIME_DATA_DIRECTORY"/"$1"/"$2"
 	if [ ! -d "$OUTPUT_DIRECTORY" ]; then
 		echo -e "\n"[common.sh] creating directory "$OUTPUT_DIRECTORY" "\n"

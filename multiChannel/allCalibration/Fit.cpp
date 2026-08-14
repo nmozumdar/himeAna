@@ -184,7 +184,7 @@ void Fit::fitGaussiansE(Module& m){
 
 		TH1D* projection = m.hEDepVsTot.ProjectionX("", bin, bin);
 
-		if(projection->GetEntries() < 400) continue;
+		if(projection->GetEntries() < 55) continue;//minCountsPerProjection) continue;
 		
 		TF1* fit = new TF1("fit", "[0] * exp( - (x - [1]) * (x - [1]) / [2] / [2])", 0., 100.);
 		fit->SetParameter(0, projection->GetMaximum());
@@ -195,6 +195,8 @@ void Fit::fitGaussiansE(Module& m){
 		double Energy = m.hEDepVsTot.GetYaxis()->GetBinCenter(bin);
 		double tot2E = fit->GetParameter(1);
 		double tot2EUnc = fit->GetParameter(2);
+		if(tot2EUnc > 5.)
+			continue;
 		int nPoints = m.maxGraphE.GetN();
 
 		m.maxGraphE.SetPoint(nPoints, tot2E, Energy);
@@ -251,6 +253,10 @@ void Fit::fitCalibrationFunctions(Module& m){
 	// and extend it by 2 ns
 	double smallDt, largeDt, tmp;
 	m.maxGraph.GetPoint(0, largeDt, tmp);
+	if(largeDt > 100)
+	{
+		m.maxGraph.GetPoint(1, largeDt, tmp);
+	}
 	m.maxGraph.GetPoint(m.maxGraph.GetN()-1, smallDt, tmp);
 	m.posCalFunc->SetRange(smallDt, largeDt);
 
@@ -260,6 +266,8 @@ void Fit::fitCalibrationFunctions(Module& m){
 		cout << "[Fit] Warning: Bad tDiff fit for Module " << m.id << endl;
 		cout<<"[Fit] Old vEff: "<<m.getEffectiveVelocity()<<endl;
 		m.posCalFunc->SetRange(smallDt + 5., largeDt - 5.);
+		cout << "[Fit] Old range: " << smallDt<< " to " << largeDt << endl;
+		cout << "[Fit] New range: " << smallDt + 6. << " to " << largeDt - 6.  << endl;
 		TProfile* prof = m.hPosVsTDiff.ProfileX("prof");
 		//m.hPosVsTDiff.Fit(m.posCalFunc,"rq0");
 		prof->Fit(m.posCalFunc,"rq0");

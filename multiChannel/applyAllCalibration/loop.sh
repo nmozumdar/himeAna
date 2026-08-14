@@ -40,7 +40,7 @@ if [ $? -eq 0 ]; then
 	
 	fileCounter=0
 	
-	create_directory calibratedFiles "$subdir"
+	#create_directory calibratedFiles "$subdir"
 
 	for filename in "$HIME_DATA_DIRECTORY"/tDiff/"$subdir"/*.root; do
 		check_threads "$fileCounter"

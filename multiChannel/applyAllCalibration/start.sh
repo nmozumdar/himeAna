@@ -23,7 +23,7 @@
 subdir=cosmic_2_1
 filename=hime_run1721_26162171606.root
 geometryFile=2026-07-31.csv
-subdir_Calibration=cosmic_2_1
+subdir_Calibration=cosmic_2_8
 
 source ../../common/common.sh
 
@@ -31,7 +31,7 @@ make
 
 if [ $? -eq 0 ]; then
 
-	create_directory calibratedFiles "$subdir"
+	#create_directory calibratedFiles "$subdir"
 
 	# start 
 	filename=$(basename "$filename")

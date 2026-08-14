@@ -62,7 +62,6 @@ void tracking(TString trb3dir, TString subdir){
 	Detector hime;
 	TFile *testfile = new TFile("test.root", "recreate");
 	int testCounter = 0;
-	
 
 	for(int eventCounter = 0; eventCounter < nEvents; eventCounter++){
 	//for(int eventCounter = 14150; eventCounter < 14170; eventCounter++){
