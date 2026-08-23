@@ -91,6 +91,8 @@ float CalibrationFunctions::getTofCorr(int moduleID, float tofRaw)
 }
 float CalibrationFunctions::getPmtTCorr(int moduleID, float pmtT, int side)
 {
+	if(moduleID == 288)
+		return pmtT;
 	if(TMath::IsNaN(tSync[moduleID]) || posCalFuncs[moduleID]->GetParameter(0) == 0.) return -10000;
 	double offset = tSync[moduleID] + (0.5 - side)*posCalFuncs[moduleID]->GetParameter(1)/posCalFuncs[moduleID]->GetParameter(0);
 	return pmtT - offset;

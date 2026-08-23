@@ -195,6 +195,8 @@ void Fit::fitGaussiansE(Module& m){
 		double Energy = m.hEDepVsTot.GetYaxis()->GetBinCenter(bin);
 		double tot2E = fit->GetParameter(1);
 		double tot2EUnc = fit->GetParameter(2);
+		if(tot2EUnc > 4.)
+			continue;
 		int nPoints = m.maxGraphE.GetN();
 
 		m.maxGraphE.SetPoint(nPoints, tot2E, Energy);
@@ -285,11 +287,18 @@ void Fit::fitCalibrationFunctionsE(Module& m){
 	}
 
 	m.maxGraphE.Fit(m.calibrationFunction, "rq0");
-	/*if(fabs(m.calibrationFunction->GetParameter(0)) > 100)
+	if(fabs(m.calibrationFunction->GetParError(0)) > 100)
 	{
 		cout << "[Fit] Warning: Bad Energy fit for Module " << m.id << endl;
-		m.calibrationFunction->SetParameter(0,-30);
-		m.calibrationFunction->SetParameter(1,1.5);
-		m.hEDepVsTot.Fit(m.calibrationFunction,"rq0");
-	}*/
+		double smallDt, largeDt, tmp;
+		m.maxGraphE.GetPoint(0, largeDt, tmp);
+		m.maxGraphE.GetPoint(m.maxGraphE.GetN()-1, smallDt, tmp);
+		m.calibrationFunction->SetRange(smallDt, largeDt-1);
+		m.maxGraphE.Fit(m.calibrationFunction, "rq0");
+
+		/*m.calibrationFunction->SetParameter(0,-30);
+		  m.calibrationFunction->SetParameter(1,1.5);
+		  m.hEDepVsTot.Fit(m.calibrationFunction,"rq0");
+		  */
+	}
 }
