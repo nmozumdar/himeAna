@@ -34,7 +34,7 @@ class CalibrationFunctions{
 	CalibrationFunctions(TString path);
 	float getPosCalibratedValue(int moduleID, float tDiff);
 	float getTofCorr(int moduleID, float tofRaw);
-	float getPmtTCorr(int moduleID, float pmtT, int side);
+	float getPmtTCorr(int moduleID, float pmtT, float pmtTot, int side);
 	float getECalibratedValue(int moduleID, float avgToT);
 
 	private:
@@ -42,6 +42,7 @@ class CalibrationFunctions{
 	std::vector<TF1*> posCalFuncs;  // Map: moduleID -> calibration function
 	std::vector<double> tSync;      // Map: moduleID -> tSync value
 	std::vector<TF1*> ECalFuncs;  // Map: moduleID -> calibration function
+	std::vector<TF1*> WalkFuncs;  // Map: moduleID*2 pmt ID -> calibration function
 };
 
 #endif

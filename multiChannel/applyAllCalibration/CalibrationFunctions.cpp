@@ -51,6 +51,7 @@ CalibrationFunctions::CalibrationFunctions(TString path)
 	// ===== Load energy calibration parameters from histograms =====
 
 	ECalFuncs = vector<TF1*>(Constants::nModules);
+	WalkFuncs = vector<TF1*>(Constants::nModules*2);
 
 	if (hVEff && hOffs && htSync)
 	{
@@ -70,6 +71,14 @@ CalibrationFunctions::CalibrationFunctions(TString path)
 			ECalFuncs[m] = (TF1*)file->Get("calibrationFunction" + Convert::toStr(m));
 			if (ECalFuncs[m] == nullptr)
 				cout << "[CalibrationFunctions] Warning: Missing Energy calibrationparameters for Module: " << m + 1 << endl;
+			const TString fname1 = TString::Format("walkfit_pmt_%04d", m*2 + 1);
+			const TString fname2 = TString::Format("walkfit_pmt_%04d", m*2 + 2);
+			WalkFuncs[m*2 + 0] = (TF1*)file->Get(fname1);
+			WalkFuncs[m*2 + 1] = (TF1*)file->Get(fname2);
+			if (WalkFuncs[m*2 + 0] == nullptr)
+				cout << "[CalibrationFunctions] Warning: Missing  Walk correction for pmt: " << m*2 + 1 << endl;
+			if (WalkFuncs[m*2 + 1] == nullptr)
+				cout << "[CalibrationFunctions] Warning: Missing  Walk correction for pmt: " << m*2 + 2 << endl;
 		}
 	}
 	else
@@ -89,13 +98,16 @@ float CalibrationFunctions::getTofCorr(int moduleID, float tofRaw)
 	return tofRaw - tSync[moduleID];
 
 }
-float CalibrationFunctions::getPmtTCorr(int moduleID, float pmtT, int side)
+float CalibrationFunctions::getPmtTCorr(int moduleID, float pmtT, float pmtTot, int side)
 {
 	if(moduleID == 288)
 		return pmtT;
 	if(TMath::IsNaN(tSync[moduleID]) || posCalFuncs[moduleID]->GetParameter(0) == 0.) return -10000;
 	double offset = tSync[moduleID] + (0.5 - side)*posCalFuncs[moduleID]->GetParameter(1)/posCalFuncs[moduleID]->GetParameter(0);
-	return pmtT - offset;
+	if(WalkFuncs[moduleID*2 + side] == nullptr)
+		return pmtT - offset;
+	else
+		return pmtT - offset - WalkFuncs[moduleID*2 + side]->Eval(pmtTot);
 
 }
 float CalibrationFunctions::getECalibratedValue(int moduleID, float avgToT)

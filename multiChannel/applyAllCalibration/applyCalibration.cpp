@@ -98,8 +98,8 @@ void applyCalibration(const char* trb3dir, const char* dir, const char* filename
 			}
 			output.z[hit] = m.z + Constants::moduleDepth * (randgen.Uniform() - 0.5);
 			output.tof[hit] = CalFuncs.getTofCorr(moduleID, input.getTofRaw(hit));
-			output.t0[hit] = CalFuncs.getPmtTCorr(moduleID, input.getT0(hit), 0);
-			output.t1[hit] = CalFuncs.getPmtTCorr(moduleID, input.getT1(hit), 1);
+			output.t0[hit] = CalFuncs.getPmtTCorr(moduleID, input.getT0(hit), input.getTot0(hit), 0);
+			output.t1[hit] = CalFuncs.getPmtTCorr(moduleID, input.getT1(hit), input.getTot1(hit), 1);
 			output.tdiff[hit] = output.t1[hit] - output.t0[hit];
 			output.time[hit] = (output.t0[hit] + output.t1[hit]) / 2.;
 			output.energy[hit] = CalFuncs.getECalibratedValue(moduleID, input.getCombinedTot(hit));
