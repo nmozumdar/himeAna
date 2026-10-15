@@ -37,6 +37,8 @@
 #include "TDiffData.h"
 #include "Detector.h"
 #include "Module.h"
+#include "TF1.h"
+#include "Constants.h"
 #include "PulseAna.h"
 #include "TMath.h"
 #include "TGraph.h"
@@ -64,14 +66,14 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 
 	// ---------------- Input ----------------
 
-	//TString pathInput(TString(trb3dir) + "/unpacked/" + TString(dir) + "/" + TString(filename));
-	TString pathInput(TString(trb3dir) + "/unpacked/" + TString(filename));
+	TString pathInput(TString(trb3dir) + "/unpacked/" + TString(dir) + "/" + TString(filename));
+	//TString pathInput(TString(trb3dir) + "/unpacked/" + TString(filename));
 	TRB3RawData input(pathInput);
 
 	// ---------------- Output ----------------
 
-	//TString pathOutput(TString(trb3dir) + "/tDiff/" + TString(dir) + "/" + TString(filename));
-	TString pathOutput(TString(trb3dir) + "/tDiff/" + TString(filename));
+	TString pathOutput(TString(trb3dir) + "/tDiff/" + TString(dir) + "/" + TString(filename));
+	//TString pathOutput(TString(trb3dir) + "/tDiff/" + TString(filename));
 	TDiffData output(pathOutput);
 
 	// ---------------- Channel mapping ----------------
@@ -159,6 +161,13 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 				for(int i = 0; i < pulses_left_up.size(); i++){
 					const array<float,2>& timeStamps_left_up = pulses_left_up[i];
 					const array<float,2>& timeStamps_right_down = pulses_right_down[i];
+
+					// ToT of the PMT on the right/bottom side
+					float tot_right_down = timeStamps_right_down[1] - timeStamps_right_down[0];
+					output.tot0.push_back(tot_right_down);
+					// ToT of the PMT on the left/top side
+					float tot_left_up = timeStamps_left_up[1] - timeStamps_left_up[0];
+					output.tot1.push_back(tot_left_up);
 					// time difference of the two rising edges
 					float tDiff = timeStamps_left_up[0] - timeStamps_right_down[0];
 					output.tDiff.push_back(tDiff);
@@ -169,12 +178,6 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 					// TODO: Fixed. to check 
 					float tof = tSum/2. - referencePulse[0];
 					output.tofRaw.push_back(tof);
-					// ToT of the PMT on the right/bottom side
-					float tot_right_down = timeStamps_right_down[1] - timeStamps_right_down[0];
-					output.tot0.push_back(tot_right_down);
-					// ToT of the PMT on the left/top side
-					float tot_left_up = timeStamps_left_up[1] - timeStamps_left_up[0];
-					output.tot1.push_back(tot_left_up);
 					// ID of the module that was hit
 					output.moduleID.push_back(m.getID());
 					// count the number of hits in this event

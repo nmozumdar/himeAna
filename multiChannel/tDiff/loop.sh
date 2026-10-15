@@ -20,7 +20,7 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdirs=(exp_cosmics_21)
+subdirs=(cosmic_2_1)
 # select the CSV file where the channel mapping is defined
 channelMapping=2026-04-21.csv
 #channelMapping=2024-06-10.csv
@@ -45,7 +45,7 @@ if [ $? -eq 0 ]; then
 		fileCounter=0
 
 		# loop over all files
-		for filename in "$HIME_DATA_DIRECTORY"/data/unpacked/"$subdir"/*.root; do
+		for filename in "$HIME_DATA_DIRECTORY"/unpacked/"$subdir"/*.root; do
 		#for filename in "$HIME_DATA_DIRECTORY"/unpacked/*.root; do
 		check_threads "$fileCounter"
 			filenameBase=$(basename "$filename")
