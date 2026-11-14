@@ -95,7 +95,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 	
 	// ---------------- Loop over events ----------------
 
-	const int nEvents = 1e6;//input.getNEvents();
+	const int nEvents = input.getNEvents();
 
 	HistogramCollection hc(activeChannels, nEvents);
 	ProgressIndicator pi(nEvents, "[tDiff] Processed events:");
