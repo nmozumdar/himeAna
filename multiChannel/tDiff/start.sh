@@ -21,9 +21,9 @@
 
 # ---------- settings ----------
 #subdir=2025-12-10
-subdir=cosmic_2_1
+subdir=deuteron
 #filename=himede_layer11_modules16-23_900V_0x200_0000.root
-filename=hime_run1721_26162164312.root
+filename=hime_run1076_26142131734.root
 # select the CSV file where the channel mapping is defined
 #channelMapping=2024-09-03_de.csv
 trigger=-1
@@ -35,7 +35,7 @@ channelMapping=2026-04-21.csv
 # in each module, but there might be more noise.
 # false -> first hit only;   true -> all hits
 calfile=cosmic_2_1
-multihit=false
+multihit=true
 plot=true
 write=true
 # ------------------------------
@@ -50,7 +50,7 @@ if [ $? -eq 0 ]; then
 
 	# start 
 	filename=$(basename "$filename")
-	$ROOT_CALL "tDiff(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",\"${filename}\",\"${channelMapping}\",${trigger},${multihit},${calfile},${write},${plot})" 
+	$ROOT_CALL "tDiff(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",\"${filename}\",\"${channelMapping}\",\"${calfile}\",${trigger},${multihit},${write},${plot})" 
 
 	wait
 	echo -e "\nstart.sh done."

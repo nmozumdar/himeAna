@@ -56,7 +56,7 @@ bool PulseAna::findPulse(vector<MF*>& messages, array<float,2>& timeStamps){
 	return false;
 }
 
-bool PulseAna::findPulses(vector<MF*>& messages, vector<array<float,2>>& timeStamps, id){
+bool PulseAna::findPulses(vector<MF*>& messages, vector<array<float,2>>& timeStamps, size_t id){
 	if(messages.size() < 2) return false;
 
 	// this variable tells if at least one rising edge was found, 
@@ -106,7 +106,7 @@ bool PulseAna::findPulses(vector<MF*>& messages, vector<array<float,2>>& timeSta
 			{
 				if(setL[iMsg] || setT[iMsg2])
 				{
-					cout<<"Pileup LT event"<<endl;
+					//std::cerr<<"Pileup LT event"<<std::endl;
 					return false;
 				}
 				timeStamps.push_back({mf_first.getStamp(), mf_second.getStamp()});

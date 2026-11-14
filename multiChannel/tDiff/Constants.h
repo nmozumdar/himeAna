@@ -42,7 +42,7 @@ namespace Constants{
 	const double hime_lr[2]={-12.,12.};
 	const double hime_lt[2]={0.,35.};
 	//Time Window for triggered event
-	const double sbt_win[2]={-3310.,-3240.};
+	const double sbt_win[2]={-3320.,-3230.};
 	
 };
 

@@ -31,7 +31,8 @@ trigger=-1
 # for your analysis. Otherwise, multiple hits can be detected 
 # in each module, but there might be more noise.
 # false -> first hit only;   true -> all hits
-multihit=false
+multihit=true
+calfile=cosmic_2_1
 # ------------------------------
 
 source ../../common/common.sh
@@ -49,7 +50,7 @@ if [ $? -eq 0 ]; then
 		#for filename in "$HIME_DATA_DIRECTORY"/unpacked/*.root; do
 		check_threads "$fileCounter"
 			filenameBase=$(basename "$filename")
-			$ROOT_CALL "tDiff(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",\"${filenameBase}\",\"${channelMapping}\",${trigger},${multihit},${calfile},true,false)" > /dev/null &
+			$ROOT_CALL "tDiff(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",\"${filenameBase}\",\"${channelMapping}\",\"${calfile}\",${trigger},${multihit},true,false)" > /dev/null &
 			fileCounter=`expr ${fileCounter} + 1`
 		done
 	done

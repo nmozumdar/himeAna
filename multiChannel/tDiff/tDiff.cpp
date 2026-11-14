@@ -64,7 +64,7 @@ using MF = hadaq::MessageFloat;
 
 
 
-void tDiff(const char *trb3dir, const char *dir, const char *filename, const char* channelMapping, int trigger, bool multihit, const char* calfile, bool write, bool plot){
+void tDiff(const char *trb3dir, const char *dir, const char *filename, const char* channelMapping, const char* calfile, int trigger, bool multihit, bool write, bool plot){
 
 	// ---------------- Input ----------------
 
@@ -89,7 +89,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 
 	// ---------------- Calibration file for multihit ----------------
 
-	TFile *calFile = new TFile(TString(trb3dir) + "calibration/calibrationParameter/"+ calfile + "/calibration.root");
+	TFile *calFile = new TFile(TString(trb3dir) + "/calibration/calibrationParameter/"+ calfile + "/calibration.root");
         TH1F* hVEff = (TH1F*)calFile->Get("hVEff");
         TH1F* hOffs = (TH1F*)calFile->Get("hOffs");
 	
@@ -120,11 +120,11 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 
 		// determine the reference time to calculate the uncalibrated ToF
 		// TODO: Check 
-		std::array<float,2> referencePulselu;
-		std::array<float,2> referencePulserd;
+		vector<array<float,2>> referencePulselu;
+		vector<array<float,2>> referencePulserd;
 		float referencePulse = 0./0.;
 		bool refPulseFound = false;
-		bool startPulseFound = PulseAna::findPulses(messagesSortedByChannel[modules[288].getChLeftUp()], referencePulselu) && PulseAna::findPulse(messagesSortedByChannel[modules[288].getChRightDown()], referencePulserd);
+		bool startPulseFound = PulseAna::findPulses(messagesSortedByChannel[modules[288].getChLeftUp()], referencePulselu, 288) && PulseAna::findPulses(messagesSortedByChannel[modules[288].getChRightDown()], referencePulserd, 288);
 
 		while(startPulseFound)
 		{
@@ -136,11 +136,11 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 			if(!multihit)
 			{
 				refPulseFound = true;
-				referencePulse = (referencePulselu[0] + timeStamps_left_up[0])/2.;
+				referencePulse = (referencePulselu[0][0] + referencePulserd[0][0])/2.;
 				break;
 			}
 
-			for(int i = 0; i < referencPulselu.size(); i++)
+			for(int i = 0; i < referencePulselu.size(); i++)
 			{
 				const array<float,2>& timeStamps_left_up = referencePulselu[i];
 
@@ -154,7 +154,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 
 					if(setlu[i] || setrd[j])
 					{
-						cout<<"Pileup LR event"<<endl;
+						//std::cout<<"Pileup LR event"<<std::endl;
 						pileup = true;
 						refPulseFound = false;
 						referencePulse = 0./0.;
@@ -167,7 +167,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 					{
 						if(refPulseFound)
 						{
-							cout<<"Pileup trigger event"<<endl;
+							//std::cout<<"Pileup trigger event"<<std::endl;
 							pileup = true;
 							refPulseFound = false;
 							referencePulse = 0./0.;
@@ -224,17 +224,18 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 			if(moduleHasHits)
 			{
 				bool pileup = false;
-				if(id < 288)
+				double window[2];
+				if(m.getID() < 288)
 				{
 					window[0] = Constants::himep_lt[0],
 					window[1] = Constants::himep_lt[1];
 				}
-				else if(id == 288)
+				else if(m.getID() == 288)
 				{
 					window[0] = Constants::sbt_lt[0],
 					window[1] = Constants::sbt_lt[1];
 				}
-				else if(id > 288)
+				else if(m.getID() > 288)
 				{
 
 					window[0] = Constants::hime_lt[0],
@@ -260,7 +261,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 
 						if(setlu[i] || setrd[j])
 						{
-							cout<<"Pileup LR event"<<endl;
+						//	std::cerr<<"Pileup LR event"<<std::endl;
 							pileup = true;
 							break;
 						}
