@@ -257,7 +257,7 @@ void Fit::fitCalibrationFunctions(Module& m){
 	m.posCalFunc->SetRange(smallDt, largeDt);
 
 	m.maxGraph.Fit(m.posCalFunc, "rq0");
-	if(fabs(fabs(m.getEffectiveVelocity()) - 144) > 10)
+	if(fabs(fabs(m.getEffectiveVelocity()) - 144) > 40)
 	{
 		cout << "[Fit] Warning: Bad tDiff fit for Module " << m.id << endl;
 		cout<<"[Fit] Old vEff: "<<m.getEffectiveVelocity()<<endl;

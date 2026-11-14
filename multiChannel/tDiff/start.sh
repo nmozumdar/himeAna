@@ -34,6 +34,7 @@ channelMapping=2026-04-21.csv
 # for your analysis. Otherwise, multiple hits can be detected 
 # in each module, but there might be more noise.
 # false -> first hit only;   true -> all hits
+calfile=cosmic_2_1
 multihit=false
 plot=true
 write=true
@@ -49,7 +50,7 @@ if [ $? -eq 0 ]; then
 
 	# start 
 	filename=$(basename "$filename")
-	$ROOT_CALL "tDiff(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",\"${filename}\",\"${channelMapping}\",${trigger},${multihit},${write},${plot})" 
+	$ROOT_CALL "tDiff(\"${HIME_DATA_DIRECTORY}\",\"${subdir}\",\"${filename}\",\"${channelMapping}\",${trigger},${multihit},${calfile},${write},${plot})" 
 
 	wait
 	echo -e "\nstart.sh done."

@@ -23,6 +23,7 @@
 #define PulseAna_h
 
 #include "TdcSubEvent.h"
+#include "Constants.h"
 #include <array>
 
 namespace PulseAna{
@@ -33,7 +34,7 @@ namespace PulseAna{
 		return false otherwise.
 	*/
 	bool findPulse(std::vector<hadaq::MessageFloat*>& messages, std::array<float,2>& timeStamps);
-	bool findPulses(std::vector<hadaq::MessageFloat*>& messages, std::vector<std::array<float,2>>& timeStamps);
+	bool findPulses(std::vector<hadaq::MessageFloat*>& messages, std::vector<std::array<float,2>>& timeStamps, id);
 };
 
 #endif

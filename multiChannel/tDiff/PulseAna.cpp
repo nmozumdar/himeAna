@@ -56,38 +56,67 @@ bool PulseAna::findPulse(vector<MF*>& messages, array<float,2>& timeStamps){
 	return false;
 }
 
-
-
-bool PulseAna::findPulses(vector<MF*>& messages, vector<array<float,2>>& timeStamps){
+bool PulseAna::findPulses(vector<MF*>& messages, vector<array<float,2>>& timeStamps, id){
 	if(messages.size() < 2) return false;
-	
+
 	// this variable tells if at least one rising edge was found, 
 	// which was followed by a falling edge
 	bool pulseFound = false;
+	double window[2];
+	if(id < 288)
+	{
+		window[0] = Constants::himep_lt[0],
+		window[1] = Constants::himep_lt[1];
+	}
+	else if(id == 288)
+	{
+		window[0] = Constants::sbt_lt[0],
+		window[1] = Constants::sbt_lt[1];
+	}
+	else if(id > 288)
+	{
+
+		window[0] = Constants::hime_lt[0],
+		window[1] = Constants::hime_lt[1];
+	}
+
+	std::vector<MF*> lead;
+	std::vector<MF*> trail;
+	for(int iMsg = 0; iMsg < messages.size(); iMsg++){
+		if(messages[iMsg]->isRising())
+			lead.push_back(messages[iMsg]);
+		if(messages[iMsg]->isFalling())
+			trail.push_back(messages[iMsg]);
+	}
+	std::vector<bool> setL(lead.size(),false);
+	std::vector<bool> setT(trail.size(),false);
 
 	// iterate over MF objects that are ordered in time
-	for(int iMsg = 0; iMsg < messages.size() - 1; iMsg++){
-		// look at pairs of subsequent MF objects
-		MF& mf_first = *(messages[iMsg]);
-		MF& mf_second = *(messages[iMsg+1]);
+	for(int iMsg = 0; iMsg < lead.size(); iMsg++){
+			MF& mf_first = *(lead[iMsg]);
 
-		// if the first MF is rising and the second one falling,
-		// we have a complete pulse
-		// -> return true
-		if(mf_first.isRising() && mf_second.isFalling()){
-			timeStamps.push_back({mf_first.getStamp(), mf_second.getStamp()});
-			pulseFound = true;
-		}
-		// if there are two rising or two falling edges,
-		// a signal got lost
-		// -> return false, because we don't know what happened exactly
-		if(mf_first.isRising() && mf_second.isRising()){
-			return false;
-		}
-		if(mf_first.isFalling() && mf_second.isFalling()){
-			return false;
+		for(int iMsg2 = 0; iMsg2 < trail.size(); iMsg2++){
+				MF& mf_second = *(trail[iMsg2]);
+
+			// if the first and second within window,
+			// we have a complete pulse
+			// -> return true
+			double td = mf_second.getStamp() - mf_first.getStamp();
+			if(td > window[0] && td < window[1])
+			{
+				if(setL[iMsg] || setT[iMsg2])
+				{
+					cout<<"Pileup LT event"<<endl;
+					return false;
+				}
+				timeStamps.push_back({mf_first.getStamp(), mf_second.getStamp()});
+
+				pulseFound = true;
+
+				setL[iMsg] = true;
+				setT[iMsg2] = true;
+			}
 		}
 	}
-	
 	return pulseFound;
 }

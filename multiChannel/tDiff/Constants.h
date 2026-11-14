@@ -34,6 +34,16 @@ namespace Constants{
 	const int nModules = 384;
 	// hime+ cabling is not sequential
 	const int TDCoff[nTdcs]={1,3,5,6,7,9,10,11,0,2,4,8,12,13,14,15};
+	//Time Windows for multihits
+	const double sbt_lr[2]={-5.,25.};
+	const double sbt_lt[2]={0.,35.};
+	const double himep_lr[2]={-15.,15.};
+	const double himep_lt[2]={0.,50.};
+	const double hime_lr[2]={-12.,12.};
+	const double hime_lt[2]={0.,35.};
+	//Time Window for triggered event
+	const double sbt_win[2]={-3310.,-3240.};
+	
 };
 
 #endif
