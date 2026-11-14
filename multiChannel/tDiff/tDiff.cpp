@@ -95,7 +95,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 	
 	// ---------------- Loop over events ----------------
 
-	const int nEvents = input.getNEvents();
+	const int nEvents = 1e6;//input.getNEvents();
 
 	HistogramCollection hc(activeChannels, nEvents);
 	ProgressIndicator pi(nEvents, "[tDiff] Processed events:");
@@ -149,7 +149,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 					const array<float,2>& timeStamps_right_down = referencePulserd[j];
 					float tDiff = timeStamps_left_up[0] - timeStamps_right_down[0];
 
-					if(multihit && !(tDiff > window[0] && tDiff < window[0]))
+					if(multihit && !(tDiff > window[0] && tDiff < window[1]))
 						continue;
 
 					if(setlu[i] || setrd[j])
@@ -160,6 +160,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 						referencePulse = 0./0.;
 						break;
 					}
+					//	std::cout<<"here: "<<tDiff<<std::endl;
 
 					setlu[i] = true;
 					setrd[j] = true;
@@ -227,19 +228,19 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 				double window[2];
 				if(m.getID() < 288)
 				{
-					window[0] = Constants::himep_lt[0],
-					window[1] = Constants::himep_lt[1];
+					window[0] = Constants::himep_lr[0],
+					window[1] = Constants::himep_lr[1];
 				}
 				else if(m.getID() == 288)
 				{
-					window[0] = Constants::sbt_lt[0],
-					window[1] = Constants::sbt_lt[1];
+					window[0] = Constants::sbt_lr[0],
+					window[1] = Constants::sbt_lr[1];
 				}
 				else if(m.getID() > 288)
 				{
 
-					window[0] = Constants::hime_lt[0],
-					window[1] = Constants::hime_lt[1];
+					window[0] = Constants::hime_lr[0],
+					window[1] = Constants::hime_lr[1];
 				}
 
 				std::vector<bool> setlu(pulses_left_up.size(),false);
@@ -256,12 +257,12 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 						float tDiff = timeStamps_left_up[0] - timeStamps_right_down[0];
 						if(hVEff && hOffs && m.getID() != 288)
 							offset = 2*hOffs->GetBinContent(m.getID()+1)/hVEff->GetBinContent(m.getID()+1);
-						if(multihit && !(tDiff+offset > window[0] && tDiff+offset < window[0]))
+						if(multihit && !(tDiff+offset > window[0] && tDiff+offset < window[1]))
 							continue;
 
 						if(setlu[i] || setrd[j])
 						{
-						//	std::cerr<<"Pileup LR event"<<std::endl;
+							//std::cerr<<"Pileup LR event"<<std::endl;
 							pileup = true;
 							break;
 						}
