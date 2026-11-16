@@ -21,7 +21,7 @@
 
 # ---------- settings ----------
 # select the data you want to calibrate
-subdir=cosmic_2_1
+subdir=deuteron
 #subdir=2024-06-25_cosmics
 geometryFile=2026-07-31.csv
 # The thresholds will NOT apply a cut on the data that are written to the output TTree object!

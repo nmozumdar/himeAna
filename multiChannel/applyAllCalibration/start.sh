@@ -20,10 +20,10 @@
 #	along with HIMEana.  If not, see <https://www.gnu.org/licenses/>.
 
 # ---------- settings ----------
-subdir=cosmic_2_1
-filename=hime_run1721_26162171606.root
+subdir=8He_lh2
+filename=hime_run1297_26148110429.root
 geometryFile=2026-07-31.csv
-subdir_Calibration=cosmic_2_1
+subdir_Calibration=cosmic_2_8
 
 source ../../common/common.sh
 

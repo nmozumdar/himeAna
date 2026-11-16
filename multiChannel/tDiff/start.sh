@@ -21,9 +21,9 @@
 
 # ---------- settings ----------
 #subdir=2025-12-10
-subdir=deuteron
+subdir=8He_lh2
 #filename=himede_layer11_modules16-23_900V_0x200_0000.root
-filename=hime_run1076_26142131734.root
+filename=hime_run1297_26148110429.root
 # select the CSV file where the channel mapping is defined
 #channelMapping=2024-09-03_de.csv
 trigger=-1
@@ -34,7 +34,7 @@ channelMapping=2026-04-21.csv
 # for your analysis. Otherwise, multiple hits can be detected 
 # in each module, but there might be more noise.
 # false -> first hit only;   true -> all hits
-calfile=cosmic_2_1
+calfile=cosmic_2_8
 multihit=true
 plot=true
 write=true

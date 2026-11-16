@@ -36,7 +36,7 @@ namespace Constants{
 	const int TDCoff[nTdcs]={1,3,5,6,7,9,10,11,0,2,4,8,12,13,14,15};
 	//Time Windows for multihits
 	const double sbt_lr[2]={-25.,5.};
-	const double sbt_lt[2]={0.,35.};
+	const double sbt_lt[2]={0.,35.};//{0.,35.} for Z = 1 and {0.,38.} for Z = 2
 	const double himep_lr[2]={-18.,18.};
 	const double himep_lt[2]={0.,50.};
 	const double hime_lr[2]={-12.,12.};
