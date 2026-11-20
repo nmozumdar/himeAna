@@ -164,7 +164,7 @@ void tDiff(const char *trb3dir, const char *dir, const char *filename, const cha
 
 					setlu[i] = true;
 					setrd[j] = true;
-					if(timeStamps_left_up[0] > Constants::sbt_win[0] && timeStamps_left_up[0] > Constants::sbt_win[0])
+					if(timeStamps_left_up[0] > Constants::sbt_win[0] && timeStamps_left_up[0] < Constants::sbt_win[1])
 					{
 						if(refPulseFound)
 						{
